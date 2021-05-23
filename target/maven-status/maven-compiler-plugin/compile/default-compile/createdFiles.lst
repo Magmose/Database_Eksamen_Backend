@@ -1,0 +1,7 @@
+mmr\redis\Redis.class
+mmr\dto\Movie.class
+mmr\DbApplication.class
+mmr\dto\Actor.class
+mmr\dto\MovieTop.class
+mmr\endpoint\Endpoint.class
+mmr\noe4j\Neo4j.class
