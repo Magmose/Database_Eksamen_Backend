@@ -10,11 +10,10 @@ import java.util.Map;
 import java.util.Set;
 
 public class Redis {
-    private final String host = "localhost";
-    private final int port = 6379;
+
     private Jedis jedis;
 
-    public Redis() {
+    public Redis(String host, int port) {
         jedis = new Jedis(host, port);
     }
 
