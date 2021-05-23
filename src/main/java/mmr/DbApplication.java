@@ -16,8 +16,12 @@ public class DbApplication {
         Neo4j neo4j = new Neo4j();
 
         Redis redis = new Redis();
+        redis.fulshDB();
+          redis.randomData("test");
         redis.incDay("YEEW the movie");
         redis.incDay("YEEW the movie");
+        redis.incDay("YEEW the movie");
+        redis.incDay("Kage patrolien");
         redis.incDay("Kage patrolien");
         Set<Tuple> response = redis.getTopWeek();
         response.forEach(k-> System.out.println(k));

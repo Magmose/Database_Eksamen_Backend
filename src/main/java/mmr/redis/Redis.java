@@ -20,33 +20,47 @@ public class Redis {
 
     public boolean incDay(String movie) {
         LocalDate currentdate = LocalDate.now();
-
         try (var tran = jedis.multi()) {
             tran.zincrby(currentdate.toString(), 1, movie);
-
             tran.exec();
         }
         return true;
     }
 
-    public Set<Tuple> getTopWeek(){
+    public Set<Tuple> getTopWeek() {
         String[] dates = new String[7];
-        for (int i = 0; i < 6 ; i++) {
-           String date = LocalDate.now().minusDays(i).toString();
-            dates[i] =date;
+        for (int i = 0; i <= 6; i++) {
+            String date = LocalDate.now().minusDays(i).toString();
+            dates[i] = date;
         }
-        String dstKey = dates[0]+">"+dates[6];
-        Set<Tuple> response;
-        try (var tran = jedis.multi()) {
-            tran.zunionstore(dstKey,dates);
-            response = (Set<Tuple>) tran.zrangeWithScores(dstKey,0,9);
-            tran.exec();
-        }
+        String dstKey = dates[0] + ">" + dates[6];
+
+
+        jedis.zunionstore(dstKey, dates);
+        Set<Tuple> response = jedis.zrangeWithScores(dstKey, -3, -1);
+
+
         return response;
     }
 
+    //TODO
 
     //__________________Til Test data______________________
+    public boolean randomData(String movie) {
+
+        for (int i = 0; i <= 6; i++) {
+            String date = LocalDate.now().minusDays(i).toString();
+            String member = "test_"+i;
+
+            var re = jedis.zincrby(date, 1, member);
+           // System.out.println("Works: " + re+"     key."+date);
 
 
+        }
+        return true;
+    }
+
+    public void fulshDB(){
+      jedis.flushAll();
+    }
 }
