@@ -66,7 +66,7 @@ public class Neo4j implements AutoCloseable {
         }
     }
 
-
+/*
     public int userLikesMovie(int userId, String movieTitle) {
         try (Session session = driver.session()) {
             String idDB = session.writeTransaction(new TransactionWork<String>() {
@@ -119,7 +119,7 @@ public class Neo4j implements AutoCloseable {
             });
         }
     }
-
+*/
 
     public void setupData(String setupMovieData){
         clearData();
