@@ -2,13 +2,13 @@ package mmr.neo4j;
 
 import org.neo4j.driver.*;
 
+import static org.neo4j.driver.Values.parameters;
+
 public class Neo4j implements AutoCloseable {
     private final Driver driver;
-    private final String uri = "bolt://localhost:7687";
-    private final String user = "neo4j";
-    private final String password ="password";
 
-    public Neo4j() {
+
+    public Neo4j(String uri, String user, String password) {
         driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
     }
 
@@ -16,4 +16,49 @@ public class Neo4j implements AutoCloseable {
     public void close() throws Exception {
         driver.close();
     }
+
+    public int createUser(final int id) {
+        try (Session session = driver.session()) {
+            int idDB = session.writeTransaction(new TransactionWork<Integer>() {
+                @Override
+                public Integer execute(Transaction tx) {
+                    Result result = tx.run("create (n:User {id: $id}) return n",
+                            parameters("id", id));
+                    return result.single().get(0).get("id").asInt();
+                }
+            });
+            return idDB;
+        }
+    }
+
+    public int getUser(final int id) {
+        try (Session session = driver.session()) {
+            int idDB = session.writeTransaction(new TransactionWork<Integer>() {
+                @Override
+                public Integer execute(Transaction tx) {
+                    Result result = tx.run("match (n {id: $id}) return n",
+                            parameters("id", id));
+                    return result.single().get(0).get("id").asInt();
+                }
+            });
+            return idDB;
+        }
+    }
+
+
+    public int userLikesMovie(int userId, String movieTitle) {
+        try (Session session = driver.session()) {
+            int idDB = session.writeTransaction(new TransactionWork<Integer>() {
+                @Override
+                public Integer execute(Transaction tx) {
+                    Result result = tx.run("match (n {id: $id}) return n",
+                            parameters("id", id));
+                    return result.single().get(0).get("id").asInt();
+                }
+            });
+            return idDB;
+        }
+    }
+
+
 }
