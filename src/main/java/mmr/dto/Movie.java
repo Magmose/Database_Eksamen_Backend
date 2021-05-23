@@ -6,7 +6,7 @@ public class Movie {
     private String director,title, released, tagline;
     private double score;
     private int likes;
-    private List<Actor> actors;
+    private List<Person> persons;
 
 
     public Movie(String title, String released, String tagline) {
@@ -67,11 +67,11 @@ public class Movie {
         this.likes = likes;
     }
 
-    public List<Actor> getActors() {
-        return actors;
+    public List<Person> getPersons() {
+        return persons;
     }
 
-    public void setActors(List<Actor> actors) {
-        this.actors = actors;
+    public void setPersons(List<Person> persons) {
+        this.persons = persons;
     }
 }

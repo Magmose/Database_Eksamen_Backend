@@ -1,6 +1,7 @@
 package mmr.neo4j;
 
 import mmr.dto.Movie;
+import mmr.dto.Person;
 
 import java.util.ArrayList;
 
@@ -34,10 +35,27 @@ public class SetupNeo4j {
 
             // USER FOLLOWING
             nj.followUser(123, 456);
+            nj.followUser(456, 123);
 
 
+            // LIKES
             ArrayList<Movie> movies = nj.getMoviesLikedByFollowed(123);
+            System.out.println("\nMovies from 123s followers:");
             movies.stream().forEach(movie -> System.out.println(movie.getTitle()));
+
+            System.out.println("\nMovies from 456s followers:");
+            ArrayList<Movie> moviesz = nj.getMoviesLikedByFollowed(456);
+            moviesz.stream().forEach(movie -> System.out.println(movie.getTitle()));
+
+            //USER LIKING PERSON
+            nj.userLikesPerson(456, "Tom Cruise");
+            nj.userLikesPerson(456, "Meg Ryan");
+
+            System.out.println("\nPersons from 123s followers:");
+            ArrayList<Person> persons = nj.getPersonsLikedByFollowed(123);
+            persons.stream().forEach(person -> System.out.println((person.getName())));
+
+
 
         } catch (Exception e) {
             e.printStackTrace();
