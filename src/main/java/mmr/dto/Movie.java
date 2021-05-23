@@ -3,21 +3,35 @@ package mmr.dto;
 import java.util.List;
 
 public class Movie {
-    private String director,title,year;
+    private String director,title, released, tagline;
     private double score;
     private int likes;
     private List<Actor> actors;
 
-    public Movie(String director, String title, String year, double score, int likes, List<Actor> actors) {
-        this.director = director;
+
+    public Movie(String title, String released, String tagline) {
         this.title = title;
-        this.year = year;
-        this.score = score;
-        this.likes = likes;
-        this.actors = actors;
+        this.released = released;
+        this.tagline = tagline;
     }
 
     public Movie() {
+    }
+
+    public String getReleased() {
+        return released;
+    }
+
+    public void setReleased(String released) {
+        this.released = released;
+    }
+
+    public String getTagline() {
+        return tagline;
+    }
+
+    public void setTagline(String tagline) {
+        this.tagline = tagline;
     }
 
     public String getDirector() {
@@ -36,13 +50,6 @@ public class Movie {
         this.title = title;
     }
 
-    public String getYear() {
-        return year;
-    }
-
-    public void setYear(String year) {
-        this.year = year;
-    }
 
     public double getScore() {
         return score;
