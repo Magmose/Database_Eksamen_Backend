@@ -1,4 +1,4 @@
-package mmr.noe4j;
+package mmr.neo4j;
 
 import org.neo4j.driver.*;
 
