@@ -11,29 +11,54 @@ public class Neo4j implements AutoCloseable {
     public Neo4j(String uri, String user, String password) {
         driver = GraphDatabase.driver(uri, AuthTokens.basic(user, password));
     }
+
     @Override
     public void close() throws Exception {
         driver.close();
     }
 
-    public int getUser( final int id )
-    {
-        try ( Session session = driver.session() )
-        {
-            int idDB = session.writeTransaction( new TransactionWork<Integer>()
-            {
+    public int createUser(final int id) {
+        try (Session session = driver.session()) {
+            int idDB = session.writeTransaction(new TransactionWork<Integer>() {
                 @Override
-                public Integer execute(Transaction tx )
-                {
-                    Result result = tx.run( "match (n {id: $id}) return n",
-                            parameters( "id", id ) );
-                    return result.single().get( 0 ).get("id").asInt();
+                public Integer execute(Transaction tx) {
+                    Result result = tx.run("create (n:User {id: $id}) return n",
+                            parameters("id", id));
+                    return result.single().get(0).get("id").asInt();
                 }
-            } );
-           return idDB;
+            });
+            return idDB;
         }
     }
 
+    public int getUser(final int id) {
+        try (Session session = driver.session()) {
+            int idDB = session.writeTransaction(new TransactionWork<Integer>() {
+                @Override
+                public Integer execute(Transaction tx) {
+                    Result result = tx.run("match (n {id: $id}) return n",
+                            parameters("id", id));
+                    return result.single().get(0).get("id").asInt();
+                }
+            });
+            return idDB;
+        }
+    }
+
+
+    public int userLikesMovie(int userId, String movieTitle) {
+        try (Session session = driver.session()) {
+            int idDB = session.writeTransaction(new TransactionWork<Integer>() {
+                @Override
+                public Integer execute(Transaction tx) {
+                    Result result = tx.run("match (n {id: $id}) return n",
+                            parameters("id", id));
+                    return result.single().get(0).get("id").asInt();
+                }
+            });
+            return idDB;
+        }
+    }
 
 
 }

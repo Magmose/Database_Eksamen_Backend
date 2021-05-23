@@ -9,7 +9,7 @@ public class SetupNeo4j {
         Neo4j nj = new Neo4j(uri, user, password);
 
 
-        System.out.println("HALLOP" + nj.getUser(123));
+        System.out.println("HALLOP" + nj.createUser(258));
 
         nj.close();
     }
