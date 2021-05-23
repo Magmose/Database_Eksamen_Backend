@@ -13,7 +13,6 @@ public class DbApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(DbApplication.class, args);
-        Neo4j neo4j = new Neo4j();
 
         Redis redis = new Redis();
         redis.incDay("YEEW the movie");
