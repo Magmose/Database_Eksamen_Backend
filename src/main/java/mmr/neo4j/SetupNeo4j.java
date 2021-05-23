@@ -14,6 +14,8 @@ public class SetupNeo4j {
         try {
             nj.setupData(setupMovieData);
 
+            System.out.println("MOVIE SIZE: "+ nj.getAllMovies().size());
+
             // USER 123
             nj.createUser(123);
             nj.userLikesMovie(123, "Something's Gotta Give");

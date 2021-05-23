@@ -84,6 +84,26 @@ public class Neo4j implements AutoCloseable {
         }
     }
 
+    public ArrayList<Movie> getAllMovies() {
+        try (Session session = driver.session()) {
+            ArrayList<Movie> movies = session.writeTransaction(new TransactionWork<ArrayList<Movie>>() {
+                @Override
+                public ArrayList<Movie> execute(Transaction tx) {
+                    Result result = tx.run("match (n:Movie) return n");
+                    ArrayList<Movie> movies = new ArrayList<>();
+                    while (result.hasNext()) {
+                        Value movieValues = result.next().get(0);
+                        Movie movie = new Movie(movieValues.get("title").toString(), movieValues.get("released").toString(), movieValues.get("tagline").toString());
+                        movies.add(movie);
+
+                    }
+                    return movies;
+                }
+            });
+            return movies;
+        }
+    }
+
     public ArrayList<Movie> getMoviesLikedByFollowed(int userId) {
         try (Session session = driver.session()) {
             ArrayList<Movie> movies = session.writeTransaction(new TransactionWork<ArrayList<Movie>>() {
