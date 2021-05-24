@@ -28,7 +28,7 @@ public class SetupNeo4j {
             nj.userLikesMovie(456, "The Da Vinci Code");
             nj.userLikesMovie(456, "Cast Away");
             nj.userLikesMovie(456, "You've Got Mail");
-
+            nj.userLikesMovie(456, "The Matrix Revolutions");
             // USER 258
             nj.createUser(258);
             nj.userLikesMovie(258, "Top Gun");
@@ -36,6 +36,7 @@ public class SetupNeo4j {
             // USER FOLLOWING
             nj.followUser(123, 456);
             nj.followUser(456, 123);
+            nj.followUser(258,456);
 
 
             // LIKES

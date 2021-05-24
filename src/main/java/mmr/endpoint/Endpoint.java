@@ -2,6 +2,7 @@ package mmr.endpoint;
 
 import com.google.gson.Gson;
 import mmr.dto.Movie;
+import mmr.dto.redis.RedisUser;
 import mmr.dto.request.RequestBodyMovie;
 import mmr.neo4j.Neo4j;
 import mmr.redis.Redis;
@@ -9,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class Endpoint {
@@ -58,6 +60,13 @@ public class Endpoint {
     @GetMapping(path ="/user/top/followed", produces = "application/json")
     public String getTopUserFollowOverall() {
         return gson.toJson(redis.getTopFollowed());
+    }
+
+    @GetMapping(path ="/user/top/update",produces = "application/json")
+    public String updateUserFollowOverall(){
+        List<RedisUser> users = nj.getTopFollowed();
+        redis.addListTopFollowed(users);
+        return gson.toJson(users);
     }
 
     @GetMapping(path ="/getAllMovies")
