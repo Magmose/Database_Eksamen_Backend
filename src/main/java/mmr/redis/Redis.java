@@ -1,6 +1,7 @@
 package mmr.redis;
 
 import mmr.dto.User;
+import mmr.dto.redis.RedisMovie;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Redis {
 
@@ -39,15 +41,17 @@ public class Redis {
     }
 
 
-    public Set<Tuple> getTopToday(int outputNumber) {
-        return jedis.zrangeWithScores(currentdate.toString(), -outputNumber, -1);
+    public List<RedisMovie> getTopToday(int outputNumber) {
+        return jedis.zrangeWithScores(currentdate.toString(), -outputNumber, -1).stream().map(tuple -> {
+            return new RedisMovie(tuple.getScore(),tuple.getElement());
+        }).collect(Collectors.toList());
     }
 
-    public Set<Tuple> getTopToday() {
+    public List<RedisMovie> getTopToday() {
         return getTopToday(DEFAULT_OUTPUT_TOP);
     }
 
-    public Set<Tuple> getTopWeek(int outputNumber) {
+    public List<RedisMovie> getTopWeek(int outputNumber) {
         String[] dates = new String[7];
         for (int i = 0; i <= 6; i++) {
             String date = currentdate.minusDays(i).toString();
@@ -55,14 +59,16 @@ public class Redis {
         }
         String dstKey = dates[0] + ">" + dates[6];
         jedis.zunionstore(dstKey, dates);
-        return jedis.zrangeWithScores(dstKey, -outputNumber, -1);
+        return jedis.zrangeWithScores(dstKey, -outputNumber, -1).stream().map(tuple -> {
+            return new RedisMovie(tuple.getScore(),tuple.getElement());
+        }).collect(Collectors.toList());
     }
 
-    public Set<Tuple> getTopWeek() {
+    public List<RedisMovie> getTopWeek() {
         return getTopWeek(DEFAULT_OUTPUT_TOP);
     }
 
-    public Set<Tuple> getTopMonth(int outputNumber) {
+    public List<RedisMovie> getTopMonth(int outputNumber) {
         YearMonth yearMonth = YearMonth.of(currentdate.getYear(), currentdate.getMonth());
         int daysInMonth = yearMonth.lengthOfMonth();
         String[] dates = new String[daysInMonth];
@@ -72,21 +78,25 @@ public class Redis {
         }
         String dstKey = dates[0] + ">" + dates[daysInMonth - 1];
         jedis.zunionstore(dstKey, dates);
-        return jedis.zrangeWithScores(dstKey, -outputNumber, -1);
+        return jedis.zrangeWithScores(dstKey, -outputNumber, -1).stream().map(tuple -> {
+            return new RedisMovie(tuple.getScore(),tuple.getElement());
+        }).collect(Collectors.toList());
     }
 
-    public Set<Tuple> getTopMonth() {
+    public List<RedisMovie> getTopMonth() {
         return getTopMonth(DEFAULT_OUTPUT_TOP);
     }
 
-    public Set<Tuple> getTopOverall(int outputNumber) {
+    public List<RedisMovie> getTopOverall(int outputNumber) {
         var response = jedis.smembers("top:total:movie").toArray(new String[0]);
         String dstKey = "top:total:movie:score";
         jedis.zunionstore(dstKey, response);
-        return jedis.zrangeWithScores(dstKey, -outputNumber, -1);
+        return jedis.zrangeWithScores(dstKey, -outputNumber, -1).stream().map(tuple -> {
+            return new RedisMovie(tuple.getScore(),tuple.getElement());
+        }).collect(Collectors.toList());
     }
 
-    public Set<Tuple> getTopOverall() {
+    public List<RedisMovie> getTopOverall() {
         return getTopOverall(DEFAULT_OUTPUT_TOP);
     }
 

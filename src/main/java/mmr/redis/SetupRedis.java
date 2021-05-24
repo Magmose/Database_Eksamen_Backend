@@ -2,6 +2,7 @@ package mmr.redis;
 
 import com.github.javafaker.Faker;
 import mmr.dto.User;
+import mmr.dto.redis.RedisMovie;
 import redis.clients.jedis.Tuple;
 
 import java.util.ArrayList;
@@ -43,24 +44,24 @@ public class SetupRedis {
 
         System.out.println("________ Today");
 
-        Set<Tuple> response1 = redis.getTopToday();
+        List<RedisMovie> response1 = redis.getTopToday();
         response1.forEach(x -> System.out.println(x));
 
         System.out.println("________ Week");
 
-        Set<Tuple> response = redis.getTopWeek();
+        List<RedisMovie>response = redis.getTopWeek();
         response.forEach(k -> System.out.println(k));
 
 
         System.out.println("________ Month");
 
-        Set<Tuple> response3 = redis.getTopMonth();
+        List<RedisMovie> response3 = redis.getTopMonth();
         response3.forEach(x -> System.out.println(x));
 
         System.out.println("________ overAll");
 
-        Set<Tuple> response4 = redis.getTopOverall();
-        response4.forEach(x -> System.out.println(x));
+        List<RedisMovie> response4 = redis.getTopOverall();
+        response4.forEach(x -> System.out.println(x.toString()));
 
 
     }
