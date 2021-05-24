@@ -2,6 +2,7 @@ package mmr.endpoint;
 
 import com.google.gson.Gson;
 import mmr.dto.Movie;
+import mmr.dto.request.RequestBodyMovie;
 import mmr.neo4j.Neo4j;
 import mmr.redis.Redis;
 import org.springframework.http.HttpStatus;
@@ -30,37 +31,36 @@ public class Endpoint {
         return "Test Response from: " + name;
     }
 
-    @PostMapping("/like")
-    @ResponseStatus(HttpStatus.OK)
-    public String userLikesMovie(int userid, String movie) {
-        nj.userLikesMovie(userid, movie);
-        redis.incDay(movie);
-        return "Succes";
+    @PostMapping(path ="/like",consumes = "application/json", produces = "application/json")
+    public String userLikesMovie(@RequestBody RequestBodyMovie requestBodyMovie) {
+        nj.userLikesMovie(requestBodyMovie.getUserid(), requestBodyMovie.getMovie());
+        redis.incDay(requestBodyMovie.getMovie());
+        return gson.toJson(requestBodyMovie);
     }
 
-    @GetMapping("/movie/top/today")
+    @GetMapping(path ="/movie/top/today", produces = "application/json")
     public String getTopMovieToday() {
         return gson.toJson(redis.getTopOverall());
     }
-    @GetMapping("/movie/top/week")
+    @GetMapping(path ="/movie/top/week", produces = "application/json")
     public String getTopMovieWeek() {
         return gson.toJson(redis.getTopWeek());
     }
-    @GetMapping("/movie/top/month")
+    @GetMapping(path ="/movie/top/month", produces = "application/json")
     public String getTopMovieMonth() {
         return gson.toJson(redis.getTopMonth());
     }
-    @GetMapping("/movie/top/overall")
+    @GetMapping(path ="/movie/top/overall", produces = "application/json")
     public String getTopMovieOverall() {
         return gson.toJson(redis.getTopOverall());
     }
 
-    @GetMapping("/user/top/followed")
+    @GetMapping(path ="/user/top/followed", produces = "application/json")
     public String getTopUserFollowOverall() {
         return gson.toJson(redis.getTopFollowed());
     }
 
-    @GetMapping("/getAllMovies")
+    @GetMapping(path ="/getAllMovies")
     public ArrayList<Movie> getMovies() {
         String uri = "bolt://localhost:7687";
         String user = "neo4j";
