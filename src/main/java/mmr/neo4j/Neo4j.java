@@ -26,13 +26,13 @@ public class Neo4j implements AutoCloseable {
     }
 
 
-    public int createUser(final int id) {
+    public int createUser(final int id,String username) {
         try (Session session = driver.session()) {
             int idDB = session.writeTransaction(new TransactionWork<Integer>() {
                 @Override
                 public Integer execute(Transaction tx) {
-                    Result result = tx.run("create (n:User {id: $id}) return n",
-                            parameters("id", id));
+                    Result result = tx.run("create (n:User {id: $id,username: $username}) return n",
+                            parameters("id", id,"username",username));
                     return result.single().get(0).get("id").asInt();
                 }
             });
@@ -174,11 +174,12 @@ public class Neo4j implements AutoCloseable {
             List<RedisUser> result = session.writeTransaction(new TransactionWork<List<RedisUser>>() {
                 @Override
                 public List<RedisUser> execute(Transaction tx) {
-                    return tx.run("match (befollowed:User)<-[follows:FOLLOWS]-(user:User) return befollowed.id as id,count(follows) as score ORDER BY COUNT(follows) DESC\n" +
+                    return tx.run("match (befollowed:User)<-[follows:FOLLOWS]-(user:User) return befollowed.id as id,count(follows) as score, befollowed.username as username ORDER BY COUNT(follows) DESC\n" +
                             "LIMIT 10").stream().map(response -> {
                         System.out.println(response);
                                 return new RedisUser(response.get("id").toString(),
-                                        "username",response.get("score").asInt());
+                                        response.get("username").asString(),
+                                        response.get("score").asInt());
                     }).collect(Collectors.toList());
                 }
             });

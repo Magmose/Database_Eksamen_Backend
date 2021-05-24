@@ -18,19 +18,19 @@ public class SetupNeo4j {
             System.out.println("MOVIE SIZE: "+ nj.getAllMovies().size());
 
             // USER 123
-            nj.createUser(123);
+            nj.createUser(123,"magnus");
             nj.userLikesMovie(123, "Something's Gotta Give");
             nj.userLikesMovie(123, "The Matrix");
             nj.userLikesMovie(123, "The Matrix Revolutions");
 
             // USER 456
-            nj.createUser(456);
+            nj.createUser(456,"rasmus");
             nj.userLikesMovie(456, "The Da Vinci Code");
             nj.userLikesMovie(456, "Cast Away");
             nj.userLikesMovie(456, "You've Got Mail");
             nj.userLikesMovie(456, "The Matrix Revolutions");
             // USER 258
-            nj.createUser(258);
+            nj.createUser(258,"mathias<");
             nj.userLikesMovie(258, "Top Gun");
 
             // USER FOLLOWING
