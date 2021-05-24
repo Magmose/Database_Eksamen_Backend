@@ -1,15 +1,16 @@
 package mmr.redis;
 
-import mmr.dto.Movie;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Map;
 import java.util.Set;
 
 public class Redis {
+
+
+    // Hive alle ud
+    // Fiks build data
 
     private Jedis jedis;
 
@@ -19,10 +20,7 @@ public class Redis {
 
     public boolean incDay(String movie) {
         LocalDate currentdate = LocalDate.now();
-        try (var tran = jedis.multi()) {
-            tran.zincrby(currentdate.toString(), 1, movie);
-            tran.exec();
-        }
+        jedis.zincrby(currentdate.toString(), 1, movie);
         return true;
     }
 
@@ -37,12 +35,22 @@ public class Redis {
 
         jedis.zunionstore(dstKey, dates);
         Set<Tuple> response = jedis.zrangeWithScores(dstKey, -3, -1);
-
-
         return response;
     }
 
-    //TODO
+    public Set<Tuple> getTopToday(){
+        LocalDate currentdate = LocalDate.now();
+        return jedis.zrangeWithScores(currentdate.toString(), -3, -1);
+    }
+
+    public long addTopFollowed(String id, String username,int followed){
+       return jedis.zadd("top:users",followed,username+":"+id);
+    }
+
+    public Set<Tuple> getTopFollowed(){
+    return jedis.zrangeWithScores("top:users", -3, -1);
+    }
+
 
     //__________________Til Test data______________________
     public boolean randomData(String movie) {
