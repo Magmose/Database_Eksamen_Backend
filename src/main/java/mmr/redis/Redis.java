@@ -1,7 +1,7 @@
 package mmr.redis;
 
-import mmr.dto.User;
 import mmr.dto.redis.RedisMovie;
+import mmr.dto.redis.RedisUser;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
@@ -100,23 +100,26 @@ public class Redis {
         return getTopOverall(DEFAULT_OUTPUT_TOP);
     }
 
-    public void addTopFollowed(User user) {
+    public void addTopFollowed(RedisUser user) {
         jedis.zadd("top:users", user.getFollowed(), user.getUsername() + ":" + user.getId());
     }
 
-    public void addListTopFollowed(List<User> users) {
+    public void addListTopFollowed(List<RedisUser> users) {
         try (var tran = jedis.multi()) {
-            for (User user : users) {
+            for (RedisUser user : users) {
                 tran.zadd("top:users", user.getFollowed(), user.getUsername() + ":" + user.getId());
             }
             tran.exec();
         }
     }
 
-    public Set<Tuple> getTopFollowed(int outputNumber) {
-        return jedis.zrangeWithScores("top:users", -outputNumber, -1);
+    public List<RedisUser> getTopFollowed(int outputNumber) {
+        return jedis.zrangeWithScores("top:users", -outputNumber, -1).stream().map(tuple -> {
+            String[] user = tuple.getElement().split(":");
+            return new RedisUser(user[0],user[1],tuple.getScore());
+        }).collect(Collectors.toList());
     }
-    public Set<Tuple> getTopFollowed() {
+    public List<RedisUser> getTopFollowed() {
         return getTopFollowed(DEFAULT_OUTPUT_TOP);
     }
 

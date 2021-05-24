@@ -1,5 +1,6 @@
 package mmr.endpoint;
 
+import com.google.gson.Gson;
 import mmr.dto.Movie;
 import mmr.neo4j.Neo4j;
 import mmr.redis.Redis;
@@ -12,13 +13,15 @@ import java.util.ArrayList;
 public class Endpoint {
     private Neo4j nj;
     private Redis redis;
+    private Gson gson;
 
     public Endpoint() {
         String uri = "bolt://localhost:7687";
         String user = "neo4j";
         String password = "123";
         nj = new Neo4j(uri, user, password);
-         redis = new Redis("localhost", 6379);
+        redis = new Redis("localhost", 6379);
+        gson = new Gson();
     }
 
     @GetMapping("/greeting")
@@ -35,9 +38,26 @@ public class Endpoint {
         return "Succes";
     }
 
-    @GetMapping("/movie/overall")
+    @GetMapping("/movie/top/today")
+    public String getTopMovieToday() {
+        return gson.toJson(redis.getTopOverall());
+    }
+    @GetMapping("/movie/top/week")
+    public String getTopMovieWeek() {
+        return gson.toJson(redis.getTopWeek());
+    }
+    @GetMapping("/movie/top/month")
+    public String getTopMovieMonth() {
+        return gson.toJson(redis.getTopMonth());
+    }
+    @GetMapping("/movie/top/overall")
     public String getTopMovieOverall() {
-    return "";
+        return gson.toJson(redis.getTopOverall());
+    }
+
+    @GetMapping("/user/top/followed")
+    public String getTopUserFollowOverall() {
+        return gson.toJson(redis.getTopFollowed());
     }
 
     @GetMapping("/getAllMovies")
