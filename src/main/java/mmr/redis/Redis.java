@@ -103,10 +103,12 @@ public class Redis {
         }
     }
 
-    public Set<Tuple> getTopFollowed() {
-        return jedis.zrangeWithScores("top:users", -3, -1);
+    public Set<Tuple> getTopFollowed(int outputNumber) {
+        return jedis.zrangeWithScores("top:users", -outputNumber, -1);
     }
-
+    public Set<Tuple> getTopFollowed() {
+        return getTopFollowed(DEFAULT_OUTPUT_TOP);
+    }
 
     //__________________Til Test data______________________
     public boolean randomData(String movie) {
