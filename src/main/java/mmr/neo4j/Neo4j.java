@@ -2,9 +2,13 @@ package mmr.neo4j;
 
 import mmr.dto.Movie;
 import mmr.dto.Person;
+import mmr.dto.redis.RedisUser;
+import mmr.redis.Redis;
 import org.neo4j.driver.*;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.neo4j.driver.Values.parameters;
 
@@ -22,13 +26,13 @@ public class Neo4j implements AutoCloseable {
     }
 
 
-    public int createUser(final int id) {
+    public int createUser(final int id,String username) {
         try (Session session = driver.session()) {
             int idDB = session.writeTransaction(new TransactionWork<Integer>() {
                 @Override
                 public Integer execute(Transaction tx) {
-                    Result result = tx.run("create (n:User {id: $id}) return n",
-                            parameters("id", id));
+                    Result result = tx.run("create (n:User {id: $id,username: $username}) return n",
+                            parameters("id", id,"username",username));
                     return result.single().get(0).get("id").asInt();
                 }
             });
@@ -106,7 +110,6 @@ public class Neo4j implements AutoCloseable {
     }
 
 
-
     public ArrayList<Movie> getMoviesLikedByFollowed(int userId) {
         try (Session session = driver.session()) {
             ArrayList<Movie> movies = session.writeTransaction(new TransactionWork<ArrayList<Movie>>() {
@@ -166,8 +169,23 @@ public class Neo4j implements AutoCloseable {
         }
     }
 
-
-
+    public List<RedisUser> getTopFollowed() {
+        try (Session session = driver.session()) {
+            List<RedisUser> result = session.writeTransaction(new TransactionWork<List<RedisUser>>() {
+                @Override
+                public List<RedisUser> execute(Transaction tx) {
+                    return tx.run("match (befollowed:User)<-[follows:FOLLOWS]-(user:User) return befollowed.id as id,count(follows) as score, befollowed.username as username ORDER BY COUNT(follows) DESC\n" +
+                            "LIMIT 10").stream().map(response -> {
+                        System.out.println(response);
+                                return new RedisUser(response.get("id").toString(),
+                                        response.get("username").asString(),
+                                        response.get("score").asInt());
+                    }).collect(Collectors.toList());
+                }
+            });
+            return result;
+        }
+    }
 
 
     private void clearData() {
@@ -183,7 +201,7 @@ public class Neo4j implements AutoCloseable {
     }
 
 
-    public void setupData(String setupMovieData){
+    public void setupData(String setupMovieData) {
         clearData();
         try (Session session = driver.session()) {
             session.writeTransaction(new TransactionWork<>() {
