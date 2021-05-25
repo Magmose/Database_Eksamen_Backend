@@ -35,6 +35,7 @@ public class SetupNeo4j {
 
             // USER FOLLOWING
             nj.followUser(123, 456);
+            nj.followUser(123, 258);
             nj.followUser(456, 123);
 
 
