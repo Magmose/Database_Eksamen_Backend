@@ -30,14 +30,14 @@ public class SetupNeo4j {
             nj.userLikesMovie(456, "You've Got Mail");
             nj.userLikesMovie(456, "The Matrix Revolutions");
             // USER 258
-            nj.createUser(258,"mathias<");
+            nj.createUser(258,"mathias");
             nj.userLikesMovie(258, "Top Gun");
 
             // USER FOLLOWING
             nj.followUser(123, 456);
             nj.followUser(456, 123);
             nj.followUser(258,456);
-
+            nj.followUser(456,258);
 
             // LIKES
             ArrayList<Movie> movies = nj.getMoviesLikedByFollowed(123);

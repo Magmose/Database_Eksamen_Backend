@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class Redis {
+public class RedisStats {
 
 
     // Hive alle ud
@@ -21,7 +21,7 @@ public class Redis {
     private LocalDate currentdate;
     private final static int DEFAULT_OUTPUT_TOP = 3;
 
-    public Redis(String host, int port) {
+    public RedisStats(String host, int port) {
         currentdate = LocalDate.now();
         jedis = new Jedis(host, port);
     }
@@ -122,6 +122,9 @@ public class Redis {
     public List<RedisUser> getTopFollowed() {
         return getTopFollowed(DEFAULT_OUTPUT_TOP);
     }
+
+
+
 
     //__________________Til Test data______________________
     public boolean randomData(String movie) {

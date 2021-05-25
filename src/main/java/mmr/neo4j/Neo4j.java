@@ -3,7 +3,6 @@ package mmr.neo4j;
 import mmr.dto.Movie;
 import mmr.dto.Person;
 import mmr.dto.redis.RedisUser;
-import mmr.redis.Redis;
 import org.neo4j.driver.*;
 
 import java.util.ArrayList;
