@@ -9,7 +9,9 @@ import java.util.List;
 
 public class SetupRedis {
     public static void main(String[] args) {
-        stats();
+        RedisSession redis = new RedisSession("localhost", 6379);
+
+        //stats();
 
 
     }
@@ -27,8 +29,7 @@ public class SetupRedis {
         redis.incDay("YEEW the movie");
         redis.incDay("Kage patrolien");
         redis.incDay("Kage patrolien");
-
-        ;
+        
 
         System.out.println("________ addTopUser");
 

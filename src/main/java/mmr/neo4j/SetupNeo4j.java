@@ -15,30 +15,54 @@ public class SetupNeo4j {
         try {
             nj.setupData(setupMovieData);
 
-            System.out.println("MOVIE SIZE: "+ nj.getAllMovies().size());
+            System.out.println("MOVIE SIZE: " + nj.getAllMovies().size());
 
             // USER 123
-            nj.createUser(123,"magnus");
+            nj.createUser(123, "magnus");
             nj.userLikesMovie(123, "Something's Gotta Give");
             nj.userLikesMovie(123, "The Matrix");
             nj.userLikesMovie(123, "The Matrix Revolutions");
+            nj.userLikesMovie(123, "The Matrix Reloaded");
+
+            // USER 1234
+            nj.createUser(1234, "magnus2");
+            nj.userLikesMovie(1234, "Something's Gotta Give");
+            nj.userLikesMovie(1234, "You've Got Mail");
+            nj.userLikesMovie(1234, "The Matrix Revolutions");
+
+            // USER 12345
+            nj.createUser(12345, "magnus3");
+            nj.userLikesMovie(12345, "Something's Gotta Give");
+            nj.userLikesMovie(12345, "The Da Vinci Code");
+            nj.userLikesMovie(12345, "The Matrix Revolutions");
+
+            // USER 12345
+            nj.createUser(123456, "magnus4");
+            nj.userLikesMovie(123456, "Something's Gotta Give");
+            nj.userLikesMovie(123456, "The Da Vinci Code");
+            nj.userLikesMovie(123456, "The Matrix Revolutions");
 
             // USER 456
-            nj.createUser(456,"rasmus");
+            nj.createUser(456, "rasmus");
             nj.userLikesMovie(456, "The Da Vinci Code");
             nj.userLikesMovie(456, "Cast Away");
             nj.userLikesMovie(456, "You've Got Mail");
             nj.userLikesMovie(456, "The Matrix Revolutions");
+
             // USER 258
-            nj.createUser(258,"mathias");
+
+            nj.createUser(258, "mathias<");
             nj.userLikesMovie(258, "Top Gun");
 
-            // USER FOLLOWING
-            nj.followUser(123, 456);
-            nj.followUser(123, 258);
+            // USER FOLLOWINGz
             nj.followUser(456, 123);
-            nj.followUser(258,456);
-            nj.followUser(456,258);
+            nj.followUser(258, 123);
+            nj.followUser(1234, 123);
+            nj.followUser(258, 456);
+            nj.followUser(1234, 12345);
+            nj.followUser(1234, 456);
+
+
 
             // LIKES
             ArrayList<Movie> movies = nj.getMoviesLikedByFollowed(123);
@@ -56,7 +80,6 @@ public class SetupNeo4j {
             System.out.println("\nPersons from 123s followers:");
             ArrayList<Person> persons = nj.getPersonsLikedByFollowed(123);
             persons.stream().forEach(person -> System.out.println((person.getName())));
-
 
 
         } catch (Exception e) {

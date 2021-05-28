@@ -8,37 +8,41 @@ import java.util.UUID;
 
 public class RedisSession {
     private Jedis jedis;
-
+    private long sessionTimeInSecounds = 120;
 
     public RedisSession(String host, int port) {
         jedis = new Jedis(host, port);
+
     }
 
     public String startSession(Map<String, String> data) {
         UUID uuid = UUID.randomUUID();
-        String sessionKey = uuid.toString();
-        String userKey = "user:" + sessionKey;
+        String sessionID = uuid.toString();
+        String userKey = "user:" + sessionID;
         try (var tran = jedis.multi()) {
-            tran.sadd("active:session", sessionKey);
             tran.hset(userKey, data);
-            tran.expire(userKey, 120L);
+            tran.expire(userKey,sessionTimeInSecounds);
             tran.exec();
         }
-        return sessionKey;
+        return sessionID;
     }
 
-    public Map<String, String> getSessionData(String sessionKey) {
-        var check = jedis.sismember("active:session", sessionKey);
+    public boolean getSessionStatus(String sessionID){
+        return jedis.exists("user:" + sessionID);
+    }
+
+    public Map<String, String> getSessionData(String sessionID) {
+        var check = getSessionStatus(sessionID);
         if (check) {
-            return jedis.hgetAll("user:" + sessionKey);
+            return jedis.hgetAll("user:" + sessionID);
         }
         return null;
     }
 
-    public Map<String, String> updateSessionData(String sessionKey,Map<String, String> data){
-        var check = jedis.sismember("active:session", sessionKey);
+    public Map<String, String> updateSessionData(String sessionID,Map<String, String> data){
+        var check = getSessionStatus(sessionID);
         if (check) {
-            String userKey = "user:" + sessionKey;
+            String userKey = "user:" + sessionID;
             jedis.hset(userKey, data);
             return jedis.hgetAll(userKey);
         }
