@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class UserDBImpl {
@@ -134,29 +136,28 @@ public class UserDBImpl {
     }
 
 
-    public User getUser(String username) throws SQLException {
+    public Map<String,String> getUser(String username) throws SQLException {
         try (Connection conn = getConnection()) {
             String sql = "select * from full_user_data WHERE username = ?;";
             PreparedStatement statement = conn.prepareStatement(sql);
             statement.setString(1, username);
             try (ResultSet result = statement.executeQuery()) {
-
+                Map<String,String> response = new HashMap<>();
                 if (result.next()) {
-                    int id = result.getInt("id");
-                    String dbusername = result.getString("username");
-                    String sirname = result.getString("sirname");
-                    String lastname = result.getString("lastname");
-                    String email = result.getString("email");
-                    String password = result.getString("password");
-                    int birthyear = result.getInt("birthyear");
-                    String roleType = result.getString("role_type");
+                    response.put("id",String.valueOf(result.getInt("id")));
+                    response.put("username",result.getString("username"));
+                    response.put("sirname",result.getString("sirname"));
+                    response.put("lastname",result.getString("lastname"));
+                    response.put("email",result.getString("email"));
+                    response.put("password",result.getString("password"));
+                    response.put("birthyear",String.valueOf(result.getInt("birthyear")));
+                    response.put("role_type",result.getString("role_type"));
+                    response.put("premium_end_date",String.valueOf(result.getLong("premium_end_date")));
+                    response.put("subsciption_tier",result.getString("subsciption_tier"));
+                    response.put("card_number",String.valueOf(result.getLong("card_number")));
 
-                    long premiumEndDate = result.getLong("premium_end_date");
-                    String subscriptionTier = result.getString("subsciption_tier");
-                    long cardNumber = result.getLong("card_number");
-                    User user = new User(birthyear, dbusername, sirname, lastname, email, password, roleType, subscriptionTier, premiumEndDate, cardNumber);
-                    user.setId(id);
-                    return user;
+
+                    return response;
                 }
                 return null;
             }

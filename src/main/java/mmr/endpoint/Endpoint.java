@@ -6,13 +6,16 @@ import mmr.dto.redis.RedisUser;
 import mmr.dto.request.RequestBodyLogin;
 import mmr.dto.request.RequestBodyMovie;
 import mmr.neo4j.Neo4j;
+import mmr.postgres.UserDBImpl;
 import mmr.redis.RedisSession;
 import mmr.redis.RedisStats;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.websocket.server.PathParam;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +26,7 @@ public class Endpoint {
     private Neo4j nj;
     private RedisStats redisStats;
     private RedisSession redisSession;
+    private  UserDBImpl postgress;
     private Gson gson;
 
     public Endpoint() {
@@ -32,6 +36,9 @@ public class Endpoint {
         nj = new Neo4j(uri, user, password);
         redisStats = new RedisStats("localhost", 6379);
         redisSession = new RedisSession("localhost", 6379);
+        String url = "jdbc:postgresql://localhost/movieusers";
+        String userPass = "softdb";
+         postgress = new UserDBImpl(url, userPass, userPass);
         gson = new Gson();
     }
 
@@ -43,12 +50,14 @@ public class Endpoint {
 
     @PostMapping(path = "/like", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> userLikesMovie(@RequestBody RequestBodyMovie requestBodyMovie, @RequestHeader("sessionID") String sessionID) {
+        System.out.println("Before: "+sessionID);
         if (redisSession.getSessionStatus(sessionID)) {
+            System.out.println("After: "+sessionID);
             nj.userLikesMovie(requestBodyMovie.getUserid(), requestBodyMovie.getMovie());
             redisStats.incDay(requestBodyMovie.getMovie());
             return new ResponseEntity<>(gson.toJson(requestBodyMovie), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("{\"session\":\"UNAUTHORIZED\"} ", HttpStatus.UNAUTHORIZED);
+            throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -85,9 +94,8 @@ public class Endpoint {
     }
 
     @PostMapping(path = "/session/start", consumes = "application/json", produces = "application/json")
-    public String startSession(@RequestBody RequestBodyLogin RequestBodyLogin) {
-        //Hent data fra postgresss
-        Map<String, String> response = new HashMap<String, String>();
+    public String startSession(@RequestBody RequestBodyLogin RequestBodyLogin) throws SQLException {
+        Map<String, String> response = postgress.getUser(RequestBodyLogin.getUsername());
         String sessionID = redisSession.startSession(response);
         return "{\"sessionID\":\"" + sessionID + "\"}";
     }
@@ -97,7 +105,7 @@ public class Endpoint {
         if (redisSession.getSessionStatus(sessionID)) {
             return new ResponseEntity<>(gson.toJson(redisSession.getSessionData(sessionID)), HttpStatus.OK);
         } else {
-            return new ResponseEntity<>("{\"session\":\"UNAUTHORIZED\"} ", HttpStatus.UNAUTHORIZED);
+            throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
     }
