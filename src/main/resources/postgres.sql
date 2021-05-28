@@ -23,25 +23,25 @@ INSERT INTO role_type VALUES ('std', 'standart free user');
 
 CREATE TABLE user_data (
 	id SERIAL PRIMARY KEY,
-	username varchar(20) NOT NULL,
+	username varchar(20) UNIQUE NOT NULL,
 	sirname varchar(20) NOT NULL,
 	lastname varchar(20) NOT NULL,
-	email varchar(30) NOT NULL,
+	email varchar(30) UNIQUE NOT NULL,
 	password varchar(30) NOT NULL,
 	birthyear int NOT NULL,
 	role_type varchar (20) REFERENCES role_type NOT NULL
 	);
 
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('Rasmus123', 'rasmus', 'Jacobsen', 'test@test.dk', 'password123', 1995, 'std');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('magmoz', 'magnus', 'klit', 'test@test.dk', '321', 1969, 'admin');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('Rasmus123', 'rasmus', 'Jacobsen', 'test@r.dk', 'password123', 1995, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('magmoz', 'magnus', 'klit', 'l@test.dk', '321', 1969, 'admin');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('kimL123', 'kim', 'Larsen', 'kim@L.dk', 'password123', 1995, 'std');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjrn34', 'bjarne', 'laursen', 'test@test.dk', '321', 1969, 'std');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjørn345', 'bjørn', 'karlsen', 'test@test.dk', 'password123', 1995, 'std');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('lr95', 'lars', 'rasmussen', 'test@test.dk', '321', 1969, 'premium');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjrn34', 'bjarne', 'laursen', 'test@f.dk', '321', 1969, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjørn345', 'bjørn', 'karlsen', 'test@d.dk', 'password123', 1995, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('lr95', 'lars', 'rasmussen', 'test@s.dk', '321', 1969, 'premium');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('movieMan9000', 'arvid', 'admin', 'arvid@a.dk', 'password123', 1995, 'mod');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('movie123', 'magnus', 'hansen', 'test@test.dk', '321', 1969, 'premium');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('mathiazz', 'mathias', '...', 'test@test.dk', 'password123', 1995, 'std');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('andersk', 'anders', 'kalhauge', 'test@test.dk', '321', 1969, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('mathiazz', 'mathias', '...', 'test@w.dk', 'password123', 1995, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('andersk', 'anders', 'kalhauge', 'test@x.dk', '321', 1969, 'std');
 
 
 
@@ -63,7 +63,7 @@ CREATE OR REPLACE VIEW full_user_data AS
     SELECT U.*, P.premium_end_date, P.subsciption_tier, P.card_number
 	FROM user_data AS U
 		LEFT OUTER JOIN premium_user_data AS P ON U.id = P.id;
----	select * from full_user_data where id = 6;
+---	select * from full_user_data;
 
 
 -- PROCEDURE
@@ -113,3 +113,5 @@ CALL create_user (
 	1233423452345
 
 );
+
+--- select * from premium_user_data;
