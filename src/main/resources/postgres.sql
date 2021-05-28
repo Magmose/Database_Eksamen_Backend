@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS role_type CASCADE;
 DROP TABLE IF EXISTS user_data CASCADE;
+DROP TABLE IF EXISTS user_role_log CASCADE;
 DROP TABLE IF EXISTS premium_user_data CASCADE;
 
 ---
@@ -114,4 +115,41 @@ CALL create_user (
 
 );
 
---- select * from premium_user_data;
+
+
+CREATE TABLE user_role_log (
+	id SERIAL PRIMARY KEY,
+	user_id int REFERENCES user_data NOT NULL,
+	old_role_type varchar (20) REFERENCES role_type NOT NULL,
+	new_role_type varchar (20) REFERENCES role_type NOT NULL,
+	timestamp timestamp default current_timestamp
+);
+
+INSERT INTO user_role_log(user_id, old_role_type, new_role_type) VALUES (2,'mod', 'admin');
+
+
+
+-- TRIGGER
+CREATE OR REPLACE FUNCTION user_change()
+RETURNS TRIGGER
+
+AS $$
+BEGIN
+	IF NEW.role_type != OLD.role_type THEN
+	INSERT INTO user_role_log(user_id, old_role_type, new_role_type)
+		 VALUES(OLD.id , OLD.role_type, NEW.role_type);
+	END IF;
+
+	RETURN NEW;
+
+END;
+$$ LANGUAGE PLPGSQL;
+
+DROP TRIGGER IF EXISTS user_role_change ON movieusers;
+
+CREATE TRIGGER user_role_change
+  BEFORE UPDATE
+  ON user_data
+  FOR EACH ROW
+  EXECUTE PROCEDURE user_change();
+---
