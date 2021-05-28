@@ -8,6 +8,8 @@ import mmr.dto.request.RequestBodyMovie;
 import mmr.neo4j.Neo4j;
 import mmr.redis.RedisSession;
 import mmr.redis.RedisStats;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.websocket.server.PathParam;
@@ -40,10 +42,14 @@ public class Endpoint {
     }
 
     @PostMapping(path = "/like", consumes = "application/json", produces = "application/json")
-    public String userLikesMovie(@RequestBody RequestBodyMovie requestBodyMovie) {
-        nj.userLikesMovie(requestBodyMovie.getUserid(), requestBodyMovie.getMovie());
-        redisStats.incDay(requestBodyMovie.getMovie());
-        return gson.toJson(requestBodyMovie);
+    public ResponseEntity<String> userLikesMovie(@RequestBody RequestBodyMovie requestBodyMovie, @RequestHeader("sessionID") String sessionID) {
+        if (redisSession.getSessionStatus(sessionID)) {
+            nj.userLikesMovie(requestBodyMovie.getUserid(), requestBodyMovie.getMovie());
+            redisStats.incDay(requestBodyMovie.getMovie());
+            return new ResponseEntity<>(gson.toJson(requestBodyMovie), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("{\"session\":\"UNAUTHORIZED\"} ", HttpStatus.UNAUTHORIZED);
+        }
     }
 
     @GetMapping(path = "/movie/top/today", produces = "application/json")
@@ -83,12 +89,17 @@ public class Endpoint {
         //Hent data fra postgresss
         Map<String, String> response = new HashMap<String, String>();
         String sessionID = redisSession.startSession(response);
-        return "{\"sessionID\":\""+sessionID+"\"}";
+        return "{\"sessionID\":\"" + sessionID + "\"}";
     }
 
-    @GetMapping(path = "/session/{sessionID}", produces = "application/json")
-    public Map<String, String>  getSession(@PathParam("sessionID")String sessionID) {
-    return redisSession.getSessionData(sessionID);
+    @GetMapping(path = "/session", produces = "application/json")
+    public ResponseEntity<String> getSession(@RequestHeader("sessionID") String sessionID) {
+        if (redisSession.getSessionStatus(sessionID)) {
+            return new ResponseEntity<>(gson.toJson(redisSession.getSessionData(sessionID)), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("{\"session\":\"UNAUTHORIZED\"} ", HttpStatus.UNAUTHORIZED);
+        }
+
     }
 
     @GetMapping(path = "/getAllMovies")
