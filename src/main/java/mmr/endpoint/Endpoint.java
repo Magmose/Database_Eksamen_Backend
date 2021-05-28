@@ -52,8 +52,8 @@ public class Endpoint {
     public ResponseEntity<String> userLikesMovie(@RequestBody RequestBodyMovie requestBodyMovie, @RequestHeader("sessionID") String sessionID) {
         System.out.println("Before: "+sessionID);
         if (redisSession.getSessionStatus(sessionID)) {
-            System.out.println("After: "+sessionID);
-            nj.userLikesMovie(requestBodyMovie.getUserid(), requestBodyMovie.getMovie());
+            Map<String,String> session = redisSession.getSessionData(sessionID);
+            nj.userLikesMovie(Integer.parseInt(session.get("id")), requestBodyMovie.getMovie());
             redisStats.incDay(requestBodyMovie.getMovie());
             return new ResponseEntity<>(gson.toJson(requestBodyMovie), HttpStatus.OK);
         } else {
