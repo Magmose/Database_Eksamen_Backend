@@ -2,8 +2,10 @@ package mmr.neo4j;
 
 import mmr.dto.Movie;
 import mmr.dto.Person;
+import mmr.dto.SimilarityPair;
 import mmr.dto.redis.RedisUser;
 import org.neo4j.driver.*;
+import org.neo4j.driver.Record;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +27,13 @@ public class Neo4j implements AutoCloseable {
     }
 
 
-    public int createUser(final int id,String username) {
+    public int createUser(final int id, String username) {
         try (Session session = driver.session()) {
             int idDB = session.writeTransaction(new TransactionWork<Integer>() {
                 @Override
                 public Integer execute(Transaction tx) {
                     Result result = tx.run("create (n:User {id: $id,username: $username}) return n",
-                            parameters("id", id,"username",username));
+                            parameters("id", id, "username", username));
                     return result.single().get(0).get("id").asInt();
                 }
             });
@@ -168,17 +170,62 @@ public class Neo4j implements AutoCloseable {
         }
     }
 
+    public ArrayList<SimilarityPair> getSimiliarNodes() {
+        try (Session session = driver.session()) {
+            ArrayList<SimilarityPair> pairs = session.writeTransaction(new TransactionWork<ArrayList<SimilarityPair>>() {
+                @Override
+                public ArrayList<SimilarityPair> execute(Transaction tx) {
+
+                    //drop graph with silient fail -> add graph to catalogue
+                    System.out.println("--------------- prøver at lave graph i gds");
+                    Result setup = tx.run("call gds.graph.drop(\"myGraph2\", false) yield graphName;");
+
+                    System.out.println("--------------- resultat fra at drop  graph i gds" + setup.consume());
+
+                    Result result = tx.run(
+                            "CALL gds.graph.create(\n" +
+                            "    'myGraph2',\n" +
+                            "    ['User', 'Movie'],\n" +
+                            "    {\n" +
+                            "        LIKES: {\n" +
+                            "            type: 'LIKES'\n" +
+                            "        }\n" +
+                            "    }\n" +
+                            ");");
+                    System.out.println("--------------- resultat fra at lave graph i gds" + result.consume());
+
+
+                    Result result2 = tx.run("CALL gds.nodeSimilarity.stream('myGraph2')\n" +
+                            "YIELD node1, node2, similarity\n" +
+                            "RETURN gds.util.asNode(node1).id AS user1, gds.util.asNode(node2).id AS user2, similarity AS score\n" +
+                            "ORDER BY score DESCENDING, user1, user2");
+
+
+                    ArrayList<SimilarityPair> pairs = new ArrayList<>();
+                    while (result2.hasNext()) {
+                        Record pairValues = result2.next();
+                        SimilarityPair pair = new SimilarityPair(pairValues.get("user1").asInt(), pairValues.get("user2").asInt(), pairValues.get("score").asDouble());
+                        pairs.add(pair);
+                    }
+                    return pairs;
+                }
+            });
+            return pairs;
+        }
+
+    }
+
     public List<RedisUser> getTopFollowed() {
         try (Session session = driver.session()) {
             List<RedisUser> result = session.writeTransaction(new TransactionWork<List<RedisUser>>() {
                 @Override
                 public List<RedisUser> execute(Transaction tx) {
                     return tx.run("match (befollowed:User)<-[follows:FOLLOWS]-(user:User) return befollowed.id as id,count(follows) as score, befollowed.username as username ORDER BY COUNT(follows) DESC\n" +
-                            "LIMIT 10").stream().map(response -> {
+                            "LIMIT 10").stream().map(response -> {<
                         System.out.println(response);
-                                return new RedisUser(response.get("id").toString(),
-                                        response.get("username").asString(),
-                                        response.get("score").asInt());
+                        return new RedisUser(response.get("id").toString(),
+                                response.get("username").asString(),
+                                response.get("score").asInt());
                     }).collect(Collectors.toList());
                 }
             });
