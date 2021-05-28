@@ -9,10 +9,10 @@ public class SetupPostgres {
         dbImpl.setupData();
 
 
-        dbImpl.createPremiumUser("TEST",
+        dbImpl.createPremiumUser("TEST123",
                 "FORNAVN",
                 "EFTERNAVN",
-                "MEAIL@EMAIL.COM",
+                "MEIL@EMAL.COM",
                 "QWERTY",
                 6969,
                 "std",
@@ -20,10 +20,10 @@ public class SetupPostgres {
                 "gold",
                 1233345345);
 
-        dbImpl.createUser("TEST",
+        dbImpl.createUser("TEST321",
                 "FORNAVN",
                 "EFTERNAVN",
-                "MEAIL@EMAIL.COM",
+                "MEAIEMAIL.COM",
                 "QWERTY",
                 6969,
                 "std");
