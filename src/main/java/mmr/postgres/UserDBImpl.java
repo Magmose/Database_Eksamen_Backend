@@ -134,16 +134,16 @@ public class UserDBImpl {
     }
 
 
-    public User getUser(int userId) throws SQLException {
+    public User getUser(String username) throws SQLException {
         try (Connection conn = getConnection()) {
-            String sql = "select * from full_user_data WHERE id = ?;";
+            String sql = "select * from full_user_data WHERE username = ?;";
             PreparedStatement statement = conn.prepareStatement(sql);
-            statement.setInt(1, userId);
+            statement.setString(1, username);
             try (ResultSet result = statement.executeQuery()) {
 
                 if (result.next()) {
                     int id = result.getInt("id");
-                    String username = result.getString("username");
+                    String dbusername = result.getString("username");
                     String sirname = result.getString("sirname");
                     String lastname = result.getString("lastname");
                     String email = result.getString("email");
@@ -154,7 +154,7 @@ public class UserDBImpl {
                     long premiumEndDate = result.getLong("premium_end_date");
                     String subscriptionTier = result.getString("subsciption_tier");
                     long cardNumber = result.getLong("card_number");
-                    User user = new User(birthyear, username, sirname, lastname, email, password, roleType, subscriptionTier, premiumEndDate, cardNumber);
+                    User user = new User(birthyear, dbusername, sirname, lastname, email, password, roleType, subscriptionTier, premiumEndDate, cardNumber);
                     user.setId(id);
                     return user;
                 }

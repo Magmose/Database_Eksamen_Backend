@@ -29,7 +29,7 @@ public class SetupPostgres {
                 "std");
 
         System.out.println("USER ID 2");
-        System.out.println(dbImpl.getUser(2).getUsername());
+        System.out.println(dbImpl.getUser("TEST321").toString());
 
         System.out.println("ALL USERNAMES");
         dbImpl.getAllUsers().forEach(user -> System.out.println(user.getUsername()));
