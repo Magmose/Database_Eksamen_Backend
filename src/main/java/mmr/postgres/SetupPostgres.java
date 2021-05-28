@@ -4,11 +4,37 @@ public class SetupPostgres {
     public static void main(String[] args) throws Exception {
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
-
-
         UserDBImpl dbImpl = new UserDBImpl(url, userPass, userPass);
-        dbImpl.createUser("Magnuz", "magnus", "klitmose", "test@test.dk", "1234", 4321);
-        System.out.println(dbImpl.getAllUsers());
+
+        dbImpl.setupData();
+
+
+        dbImpl.createPremiumUser("TEST123",
+                "FORNAVN",
+                "EFTERNAVN",
+                "MEIL@EMAL.COM",
+                "QWERTY",
+                6969,
+                "std",
+                1242234,
+                "gold",
+                1233345345);
+
+        dbImpl.createUser("TEST321",
+                "FORNAVN",
+                "EFTERNAVN",
+                "MEAIEMAIL.COM",
+                "QWERTY",
+                6969,
+                "std");
+
+        System.out.println("USER ID 2");
+        System.out.println(dbImpl.getUser(2).getUsername());
+
+        System.out.println("ALL USERNAMES");
+        dbImpl.getAllUsers().forEach(user -> System.out.println(user.getUsername()));
+
+
     }
 
 

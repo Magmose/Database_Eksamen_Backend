@@ -3,15 +3,21 @@ package mmr.redis;
 import com.github.javafaker.Faker;
 import mmr.dto.redis.RedisMovie;
 import mmr.dto.redis.RedisUser;
-import redis.clients.jedis.Tuple;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class SetupRedis {
     public static void main(String[] args) {
-        Redis redis = new Redis("localhost", 6379);
+        RedisSession redis = new RedisSession("localhost", 6379);
+
+        //stats();
+
+
+    }
+
+    private static void stats() {
+        RedisStats redis = new RedisStats("localhost", 6379);
         redis.fulshDB();
 
         redis.randomData("test");
@@ -23,8 +29,7 @@ public class SetupRedis {
         redis.incDay("YEEW the movie");
         redis.incDay("Kage patrolien");
         redis.incDay("Kage patrolien");
-
-       ;
+        
 
         System.out.println("________ addTopUser");
 
@@ -62,7 +67,5 @@ public class SetupRedis {
 
         List<RedisMovie> response4 = redis.getTopOverall();
         response4.forEach(x -> System.out.println(x.toString()));
-
-
     }
 }
