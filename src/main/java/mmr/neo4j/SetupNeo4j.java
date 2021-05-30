@@ -2,6 +2,7 @@ package mmr.neo4j;
 
 import mmr.dto.Movie;
 import mmr.dto.Person;
+import mmr.dto.SimilarityPair;
 
 import java.util.ArrayList;
 
@@ -50,8 +51,7 @@ public class SetupNeo4j {
             nj.userLikesMovie(456, "The Matrix Revolutions");
 
             // USER 258
-
-            nj.createUser(258, "mathias<");
+            nj.createUser(258, "mathias");
             nj.userLikesMovie(258, "Top Gun");
 
             // USER FOLLOWINGz
@@ -81,6 +81,11 @@ public class SetupNeo4j {
             ArrayList<Person> persons = nj.getPersonsLikedByFollowed(123);
             persons.stream().forEach(person -> System.out.println((person.getName())));
 
+
+            ArrayList<SimilarityPair> pairs = nj.getSimiliarNodes();
+            pairs.forEach(similarityPair -> {
+                System.out.println(similarityPair.getUserid1() + " -- "+similarityPair.getUserid2()+ " -- "+similarityPair.getScore()+ " -- ");
+            });
 
         } catch (Exception e) {
             e.printStackTrace();

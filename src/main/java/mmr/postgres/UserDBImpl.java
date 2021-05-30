@@ -163,4 +163,43 @@ public class UserDBImpl {
             }
         }
     }
+
+    public void updateUserRole(int userId, String roleType) throws SQLException {
+        String sql = "UPDATE user_data " +
+                "SET role_type = ? " +
+                "WHERE id = ?;";
+        try (Connection con = getConnection();
+             PreparedStatement stmt = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1, roleType);
+            stmt.setInt(2, userId);
+
+            stmt.executeUpdate();
+        }
+    }
+
+
+    public ArrayList<String> getUserRoleLog() throws SQLException {
+        try (Connection conn = getConnection()) {
+            String sql = "select * from user_role_log;";
+            PreparedStatement statement = conn.prepareStatement(sql);
+            try (ResultSet result = statement.executeQuery()) {
+
+                ArrayList<String> logs = new ArrayList<>();
+
+                while (result.next()) {
+                    int user_id = result.getInt("user_id");
+                    String newRoleType = result.getString("old_role_type");
+                    String oldRoleType = result.getString("new_role_type");
+                    String timestamp = result.getTimestamp("timestamp").toString();
+
+                    String log = "USER ID: " + user_id + " OLD ROLE: " + oldRoleType + " NEW ROLE: " + newRoleType + " TIMESTAMP: " + timestamp;
+
+                    logs.add(log);
+                }
+                return logs;
+            }
+        }
+    }
+
 }
