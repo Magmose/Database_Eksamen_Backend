@@ -9,11 +9,15 @@ import mmr.neo4j.Neo4j;
 import mmr.postgres.UserDBImpl;
 import mmr.redis.RedisSession;
 import mmr.redis.RedisStats;
+import org.apache.commons.pool2.impl.GenericObjectPoolConfig;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisClientConfig;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -35,9 +39,17 @@ public class Endpoint {
         String password = "123";
         nj = new Neo4j(uri, user, password);
 
-        Jedis jedis = new Jedis("localhost", 6379);
+
+        GenericObjectPoolConfig jedisPoolConfig = new GenericObjectPoolConfig();
+        jedisPoolConfig.setMaxTotal(100);
+        jedisPoolConfig.setMaxIdle(20);
+        jedisPoolConfig.setMinIdle(10);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig,"localhost", 6379);
+        Jedis jedis = jedisPool.getResource();
+
         redisStats = new RedisStats(jedis);
         redisSession = new RedisSession(jedis);
+
 
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
