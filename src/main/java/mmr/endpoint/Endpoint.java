@@ -27,7 +27,6 @@ public class Endpoint {
     private RedisStats redisStats;
     private RedisSession redisSession;
     private UserDBImpl postgress;
-    private Jedis jedis;
     private Gson gson;
 
     public Endpoint() {
@@ -36,6 +35,9 @@ public class Endpoint {
         String password = "123";
         nj = new Neo4j(uri, user, password);
 
+        Jedis jedis = new Jedis("localhost", 6379);
+        redisStats = new RedisStats(jedis);
+        redisSession = new RedisSession(jedis);
 
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
@@ -44,17 +46,7 @@ public class Endpoint {
         gson = new Gson();
     }
 
-    public Endpoint(Neo4j nj, RedisStats redisStats, RedisSession redisSession, UserDBImpl userDBImpl) {
 
-        this.nj = nj;
-
-        this.redisStats = redisStats;
-        this.redisSession = redisSession;
-
-        this.postgress = userDBImpl;
-
-        gson = new Gson();
-    }
 
     @GetMapping("/greeting")
     public String greeting(@RequestParam(value = "name", defaultValue = "World") String name) {

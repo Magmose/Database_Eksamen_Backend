@@ -26,6 +26,7 @@ public class DbApplication {
         String password = "123";
         Neo4j nj = new Neo4j(uri, user, password);
         SetupNeo4j.setup(nj);
+
         Jedis jedis = new Jedis("localhost", 6379);
         RedisStats redisStats = new RedisStats(jedis);
         RedisSession redisSession = new RedisSession(jedis);
@@ -35,14 +36,16 @@ public class DbApplication {
         List<RedisUser> users = nj.getTopFollowed();
         redisStats.addListTopFollowed(users);
 
+        jedis.quit();
+        /*
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
         UserDBImpl postgress = new UserDBImpl(url, userPass, userPass);
         postgress.setupData();
+*/
 
 
-
-        Endpoint endpoint = new Endpoint(nj, redisStats, redisSession, postgress);
+        Endpoint endpoint = new Endpoint();
 
 
     }
