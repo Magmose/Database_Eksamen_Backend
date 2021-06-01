@@ -33,8 +33,8 @@ public class SetupRedis {
 
         System.out.println("________ addTopUser");
 
-        redis.addTopFollowed(new RedisUser("123I234D", "kageManden", 5));
-        redis.addTopFollowed(new RedisUser("123ID", "MangusTester", 195436435));
+        redis.addTopFollowed(new RedisUser("1", "Rasmus123", 5));
+        redis.addTopFollowed(new RedisUser("2", "magmoz", 195436435));
 
         List<RedisUser> users = new ArrayList<>();
         for (int i = 0; i < 100; i++) {
