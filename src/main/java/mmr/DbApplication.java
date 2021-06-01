@@ -9,6 +9,7 @@ import mmr.redis.RedisSession;
 import mmr.redis.RedisStats;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import redis.clients.jedis.Jedis;
 
 import java.util.List;
 
@@ -25,9 +26,9 @@ public class DbApplication {
         String password = "123";
         Neo4j nj = new Neo4j(uri, user, password);
         SetupNeo4j.setup(nj);
-
-        RedisStats redisStats = new RedisStats("localhost", 6379);
-        RedisSession redisSession = new RedisSession("localhost", 6379);
+        Jedis jedis = new Jedis("localhost", 6379);
+        RedisStats redisStats = new RedisStats(jedis);
+        RedisSession redisSession = new RedisSession(jedis);
 
         redisStats.fulshDB();
         redisStats.randomMovieData();

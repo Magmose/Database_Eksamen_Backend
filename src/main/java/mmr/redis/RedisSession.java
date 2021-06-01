@@ -9,8 +9,8 @@ public class RedisSession {
     private Jedis jedis;
     private long sessionTimeInSecounds = 120;
 
-    public RedisSession(String host, int port) {
-        jedis = new Jedis(host, port);
+    public RedisSession(Jedis jedis) {
+        this.jedis = jedis;
 
     }
 

@@ -10,17 +10,17 @@ import java.util.List;
 public class SetupRedis {
     public static void main(String[] args) {
        //RedisSession redis = new RedisSession("localhost", 6379);
-        RedisStats redis = new RedisStats("localhost", 6379);
+        /*RedisStats redis = new RedisStats("localhost", 6379);
         redis.fulshDB();
         redis.randomMovieData();
         redis.getTopMonth(10).forEach(k -> System.out.println(k));
         System.out.println("________________________");
         redis.getTopOverall(10).forEach(k -> System.out.println(k));
         //stats();
-
+*/
 
     }
-
+/*
     private static void stats() {
         RedisStats redis = new RedisStats("localhost", 6379);
         redis.fulshDB();
@@ -73,4 +73,6 @@ public class SetupRedis {
         List<RedisMovie> response4 = redis.getTopOverall();
         response4.forEach(x -> System.out.println(x.toString()));
     }
+    
+ */
 }

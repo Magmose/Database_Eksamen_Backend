@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import redis.clients.jedis.Jedis;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ public class Endpoint {
     private RedisStats redisStats;
     private RedisSession redisSession;
     private UserDBImpl postgress;
+    private Jedis jedis;
     private Gson gson;
 
     public Endpoint() {
@@ -34,8 +36,6 @@ public class Endpoint {
         String password = "123";
         nj = new Neo4j(uri, user, password);
 
-        redisStats = new RedisStats("localhost", 6379);
-        redisSession = new RedisSession("localhost", 6379);
 
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";

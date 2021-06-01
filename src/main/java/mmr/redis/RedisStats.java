@@ -23,9 +23,9 @@ public class RedisStats {
     private LocalDate currentdate;
     private final static int DEFAULT_OUTPUT_TOP = 3;
 
-    public RedisStats(String host, int port) {
+    public RedisStats(Jedis jedis) {
         currentdate = LocalDate.now();
-        jedis = new Jedis(host, port);
+        this.jedis = jedis;
     }
 
     public boolean incDay(String movie) {
