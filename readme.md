@@ -21,7 +21,9 @@ Anbefalet docker script:
 
 
 Postman 
-Her kan vores postman projekt findes som json fil i roden af dette projekt.
+Her kan vores postman projekt findes som json fil i roden af dette projekt. [HER](https://github.com/Magmose/Database_Eksamen_Backend/blob/main/postman_database_collection.json)  
+Det kan også findet online via [dette link](https://www.getpostman.com/collections/1ffbafcceaab14506273)
+
 
 Angular frontend
 Her kan vores angular frontend findes: 
