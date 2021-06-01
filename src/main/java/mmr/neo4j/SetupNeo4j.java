@@ -8,84 +8,83 @@ import java.util.ArrayList;
 
 public class SetupNeo4j {
 
-    public static void main(String[] args) throws Exception {
-        String uri = "bolt://localhost:7687";
-        String user = "neo4j";
-        String password = "123";
-        Neo4j nj = new Neo4j(uri, user, password);
+    public static void setup(Neo4j nj) throws Exception {
+
         try {
             nj.setupData(setupMovieData);
 
-            System.out.println("MOVIE SIZE: " + nj.getAllMovies().size());
+//            System.out.println("MOVIE SIZE: " + nj.getAllMovies().size());
 
-            // USER 123
-            nj.createUser(123, "magnus");
-            nj.userLikesMovie(123, "Something's Gotta Give");
-            nj.userLikesMovie(123, "The Matrix");
-            nj.userLikesMovie(123, "The Matrix Revolutions");
-            nj.userLikesMovie(123, "The Matrix Reloaded");
+            // USER 1
+            nj.createUser(1, "Rasmus123");
+            nj.userLikesMovie(1, "Something's Gotta Give");
+            nj.userLikesMovie(1, "The Matrix");
+            nj.userLikesMovie(1, "The Matrix Revolutions");
+            nj.userLikesMovie(1, "The Matrix Reloaded");
 
-            // USER 1234
-            nj.createUser(1234, "magnus2");
-            nj.userLikesMovie(1234, "Something's Gotta Give");
-            nj.userLikesMovie(1234, "You've Got Mail");
-            nj.userLikesMovie(1234, "The Matrix Revolutions");
+            // USER 3
+            nj.createUser(3, "kimL123");
+            nj.userLikesMovie(3, "Something's Gotta Give");
+            nj.userLikesMovie(3, "You've Got Mail");
+            nj.userLikesMovie(3, "The Matrix Revolutions");
 
-            // USER 12345
-            nj.createUser(12345, "magnus3");
-            nj.userLikesMovie(12345, "Something's Gotta Give");
-            nj.userLikesMovie(12345, "The Da Vinci Code");
-            nj.userLikesMovie(12345, "The Matrix Revolutions");
 
-            // USER 12345
-            nj.createUser(123456, "magnus4");
-            nj.userLikesMovie(123456, "Something's Gotta Give");
-            nj.userLikesMovie(123456, "The Da Vinci Code");
-            nj.userLikesMovie(123456, "The Matrix Revolutions");
+            // USER 4
+            nj.createUser(4, "bjrn34");
+            nj.userLikesMovie(4, "Something's Gotta Give");
+            nj.userLikesMovie(4, "The Da Vinci Code");
+            nj.userLikesMovie(4, "The Matrix Revolutions");
 
-            // USER 456
-            nj.createUser(456, "rasmus");
-            nj.userLikesMovie(456, "The Da Vinci Code");
-            nj.userLikesMovie(456, "Cast Away");
-            nj.userLikesMovie(456, "You've Got Mail");
-            nj.userLikesMovie(456, "The Matrix Revolutions");
+            // USER 5
+            nj.createUser(5, "lr95");
+            nj.userLikesMovie(5, "Something's Gotta Give");
+            nj.userLikesMovie(5, "The Da Vinci Code");
+            nj.userLikesMovie(5, "The Matrix Revolutions");
 
-            // USER 258
-            nj.createUser(258, "mathias");
-            nj.userLikesMovie(258, "Top Gun");
 
-            // USER FOLLOWINGz
-            nj.followUser(456, 123);
-            nj.followUser(258, 123);
-            nj.followUser(1234, 123);
-            nj.followUser(258, 456);
-            nj.followUser(1234, 12345);
-            nj.followUser(1234, 456);
+            // USER 6
+            nj.createUser(6, "movie123");
+            nj.userLikesMovie(6, "The Da Vinci Code");
+            nj.userLikesMovie(6, "Cast Away");
+            nj.userLikesMovie(6, "You've Got Mail");
+            nj.userLikesMovie(6, "The Matrix Revolutions");
+
+            // USER 7
+            nj.createUser(7, "mathiazz");
+            nj.userLikesMovie(7, "Top Gun");
+
+            // USER FOLLOWING
+            nj.followUser(1, 3);
+            nj.followUser(4, 3);
+            nj.followUser(5, 3);
+            nj.followUser(4, 1);
+            nj.followUser(5, 6);
+            nj.followUser(5, 1);
 
 
 
             // LIKES
-            ArrayList<Movie> movies = nj.getMoviesLikedByFollowed(123);
-            System.out.println("\nMovies from 123s followers:");
-            movies.stream().forEach(movie -> System.out.println(movie.getTitle()));
+            ArrayList<Movie> movies = nj.getMoviesLikedByFollowed(1);
+//            System.out.println("\nMovies from 123s followers:");
+//            movies.stream().forEach(movie -> System.out.println(movie.getTitle()));
 
-            System.out.println("\nMovies from 456s followers:");
-            ArrayList<Movie> moviesz = nj.getMoviesLikedByFollowed(456);
-            moviesz.stream().forEach(movie -> System.out.println(movie.getTitle()));
+//            System.out.println("\nMovies from 456s followers:");
+//            ArrayList<Movie> moviesz = nj.getMoviesLikedByFollowed(3);
+//            moviesz.stream().forEach(movie -> System.out.println(movie.getTitle()));
 
             //USER LIKING PERSON
-            nj.userLikesPerson(456, "Tom Cruise");
-            nj.userLikesPerson(456, "Meg Ryan");
+            nj.userLikesPerson(3, "Tom Cruise");
+            nj.userLikesPerson(3, "Meg Ryan");
 
-            System.out.println("\nPersons from 123s followers:");
-            ArrayList<Person> persons = nj.getPersonsLikedByFollowed(123);
-            persons.stream().forEach(person -> System.out.println((person.getName())));
+//            System.out.println("\nPersons from 123s followers:");
+//            ArrayList<Person> persons = nj.getPersonsLikedByFollowed(1);
+//            persons.stream().forEach(person -> System.out.println((person.getName())));
 
 
-            ArrayList<SimilarityPair> pairs = nj.getSimiliarNodes();
-            pairs.forEach(similarityPair -> {
-                System.out.println(similarityPair.getUserid1() + " -- "+similarityPair.getUserid2()+ " -- "+similarityPair.getScore()+ " -- ");
-            });
+//            ArrayList<SimilarityPair> pairs = nj.getSimiliarNodes();
+//            pairs.forEach(similarityPair -> {
+//                System.out.println(similarityPair.getUserid1() + " -- "+similarityPair.getUserid2()+ " -- "+similarityPair.getScore()+ " -- ");
+//            });
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -94,7 +93,7 @@ public class SetupNeo4j {
     }
 
 
-    private static String setupMovieData = "CREATE (TheMatrix:Movie {title:'The Matrix', released:1999, tagline:'Welcome to the Real World'})\n" +
+    public static String setupMovieData = "CREATE (TheMatrix:Movie {title:'The Matrix', released:1999, tagline:'Welcome to the Real World'})\n" +
             "CREATE (Keanu:Person {name:'Keanu Reeves', born:1964})\n" +
             "CREATE (Carrie:Person {name:'Carrie-Anne Moss', born:1967})\n" +
             "CREATE (Laurence:Person {name:'Laurence Fishburne', born:1961})\n" +

@@ -221,7 +221,7 @@ public class Neo4j implements AutoCloseable {
                 @Override
                 public List<RedisUser> execute(Transaction tx) {
                     return tx.run("match (befollowed:User)<-[follows:FOLLOWS]-(user:User) return befollowed.id as id,count(follows) as score, befollowed.username as username ORDER BY COUNT(follows) DESC\n" +
-                            "LIMIT 10").stream().map(response -> {<
+                            "LIMIT 10").stream().map(response -> {
                         System.out.println(response);
                         return new RedisUser(response.get("id").toString(),
                                 response.get("username").asString(),

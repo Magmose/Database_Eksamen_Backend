@@ -37,11 +37,11 @@ INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, 
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('magmoz', 'magnus', 'klit', 'l@test.dk', '321', 1969, 'admin');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('kimL123', 'kim', 'Larsen', 'kim@L.dk', 'password123', 1995, 'std');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjrn34', 'bjarne', 'laursen', 'test@f.dk', '321', 1969, 'std');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjørn345', 'bjørn', 'karlsen', 'test@d.dk', 'password123', 1995, 'std');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('lr95', 'lars', 'rasmussen', 'test@s.dk', '321', 1969, 'premium');
-INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('movieMan9000', 'arvid', 'admin', 'arvid@a.dk', 'password123', 1995, 'mod');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('movie123', 'magnus', 'hansen', 'test@test.dk', '321', 1969, 'premium');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('mathiazz', 'mathias', '...', 'test@w.dk', 'password123', 1995, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('bjørn345', 'bjørn', 'karlsen', 'test@d.dk', 'password123', 1995, 'std');
+INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('movieMan9000', 'arvid', 'admin', 'arvid@a.dk', 'password123', 1995, 'mod');
 INSERT INTO user_data (username, sirname, lastname, email, password, birthyear, role_type) VALUES ('andersk', 'anders', 'kalhauge', 'test@x.dk', '321', 1969, 'std');
 
 

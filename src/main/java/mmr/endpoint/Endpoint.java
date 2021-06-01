@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 public class Endpoint {
     private Neo4j nj;
@@ -34,11 +35,26 @@ public class Endpoint {
         String user = "neo4j";
         String password = "123";
         nj = new Neo4j(uri, user, password);
+
         redisStats = new RedisStats("localhost", 6379);
         redisSession = new RedisSession("localhost", 6379);
+
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
-         postgress = new UserDBImpl(url, userPass, userPass);
+        postgress = new UserDBImpl(url, userPass, userPass);
+
+        gson = new Gson();
+    }
+
+    public Endpoint(Neo4j nj, RedisStats redisStats, RedisSession redisSession, UserDBImpl userDBImpl) {
+
+        this.nj = nj;
+
+        this.redisStats = redisStats;
+        this.redisSession = redisSession;
+
+        this.postgress = userDBImpl;
+
         gson = new Gson();
     }
 
@@ -96,6 +112,11 @@ public class Endpoint {
     @PostMapping(path = "/session/start", consumes = "application/json", produces = "application/json")
     public String startSession(@RequestBody RequestBodyLogin RequestBodyLogin) throws SQLException {
         Map<String, String> response = postgress.getUser(RequestBodyLogin.getUsername());
+        for (Map.Entry<String, String> entry: response.entrySet()
+             ) {
+            System.out.println(entry.getKey() + " TEST " + entry.getValue() );
+
+        }
         String sessionID = redisSession.startSession(response);
         return "{\"sessionID\":\"" + sessionID + "\"}";
     }
