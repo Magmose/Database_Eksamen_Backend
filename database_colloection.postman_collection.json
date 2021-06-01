@@ -256,6 +256,31 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "getMovieReccomendations",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "sessionID",
+						"value": "04966f98-fb62-4836-8e14-2096ea5e3ffa",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8081/getMovieReccomendations",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"getMovieReccomendations"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

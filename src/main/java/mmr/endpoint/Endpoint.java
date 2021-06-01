@@ -81,6 +81,18 @@ public class Endpoint {
 
     }
 
+    @GetMapping(path = "/getMovieReccomendations", produces = "application/json")
+    public ArrayList<Movie> getMovieReccomendations(@RequestHeader("sessionID") String sessionID) {
+        System.out.println("Before: " + sessionID);
+
+        Map<String, String> session = redisSession.getSessionData(sessionID);
+        if (session == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        return nj.getMoviesLikedByFollowed(Integer.parseInt(session.get("id")));
+
+
+
+    }
+
     @GetMapping(path = "/movie/top/today", produces = "application/json")
     public String getTopMovieToday() {
         return gson.toJson(redisStats.getTopToday());
