@@ -21,9 +21,8 @@ Anbefalet docker script:
 
 
 Postman 
-Her kan vores postman projekt findes:
-MANGLER
+Her kan vores postman projekt findes som json fil i roden af dette projekt.
 
 Angular frontend
 Her kan vores angular frontend findes: 
-MANGLER
+https://github.com/RasmusLynge/databaseFront

@@ -1,0 +1,261 @@
+{
+	"info": {
+		"_postman_id": "71e85f10-e038-48c2-96d6-25680714d7e8",
+		"name": "New Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "TopFollowed",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/user/top/followed",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"user",
+						"top",
+						"followed"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UserLikeMovie",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					},
+					{
+						"key": "sessionID",
+						"value": "sessionID",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"userid\":1234,\r\n\"movie\":\"YeewMovie.DK\"}"
+				},
+				"url": {
+					"raw": "http://localhost:8081/like",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"like"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TopMovieToday",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/movie/top/today",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"movie",
+						"top",
+						"today"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TopMovieWeek",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/movie/top/week",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"movie",
+						"top",
+						"week"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TopMovieMonth",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/movie/top/month",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"movie",
+						"top",
+						"month"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "TopMovieOverall",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/movie/top/overall",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"movie",
+						"top",
+						"overall"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateHighestFollowedUsers",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/user/top/update",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"user",
+						"top",
+						"update"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetAllMovies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/getAllMovies",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"getAllMovies"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "StartSession",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"movie123\",\r\n    \"password\": \"123\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8081/session/start",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"session",
+						"start"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GetSession",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "sessionID",
+						"value": "",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://localhost:8081/session",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"session"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "getUserRoleLogs",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8081/getUserRoleLog",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8081",
+					"path": [
+						"getUserRoleLog"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
