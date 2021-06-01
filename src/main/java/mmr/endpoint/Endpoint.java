@@ -123,11 +123,6 @@ public class Endpoint {
 
     @GetMapping(path = "/getAllMovies")
     public ArrayList<Movie> getMovies() {
-        String uri = "bolt://localhost:7687";
-        String user = "neo4j";
-        String password = "123";
-        Neo4j nj = new Neo4j(uri, user, password);
-
         try {
 
             return nj.getAllMovies();
@@ -139,6 +134,19 @@ public class Endpoint {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+
+    @GetMapping(path = "/getUserRoleLog")
+    public ArrayList<String> getUserRoleLog() {
+
+        try {
+            return postgress.getUserRoleLog();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
         return null;
     }
 
