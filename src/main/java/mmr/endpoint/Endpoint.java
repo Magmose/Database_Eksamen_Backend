@@ -14,10 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import javax.websocket.server.PathParam;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +24,7 @@ public class Endpoint {
     private Neo4j nj;
     private RedisStats redisStats;
     private RedisSession redisSession;
-    private  UserDBImpl postgress;
+    private UserDBImpl postgress;
     private Gson gson;
 
     public Endpoint() {
@@ -38,7 +36,7 @@ public class Endpoint {
         redisSession = new RedisSession("localhost", 6379);
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
-         postgress = new UserDBImpl(url, userPass, userPass);
+        postgress = new UserDBImpl(url, userPass, userPass);
         gson = new Gson();
     }
 
@@ -50,15 +48,15 @@ public class Endpoint {
 
     @PostMapping(path = "/like", consumes = "application/json", produces = "application/json")
     public ResponseEntity<String> userLikesMovie(@RequestBody RequestBodyMovie requestBodyMovie, @RequestHeader("sessionID") String sessionID) {
-        System.out.println("Before: "+sessionID);
-        if (redisSession.getSessionStatus(sessionID)) {
-            System.out.println("After: "+sessionID);
-            nj.userLikesMovie(requestBodyMovie.getUserid(), requestBodyMovie.getMovie());
-            redisStats.incDay(requestBodyMovie.getMovie());
-            return new ResponseEntity<>(gson.toJson(requestBodyMovie), HttpStatus.OK);
-        } else {
-            throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED);
-        }
+        System.out.println("Before: " + sessionID);
+
+        Map<String, String> session = redisSession.getSessionData(sessionID);
+        if (session == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        redisStats.incDay(requestBodyMovie.getMovie());
+        nj.userLikesMovie(Integer.parseInt(session.get("id")), requestBodyMovie.getMovie());
+        return new ResponseEntity<>(gson.toJson(requestBodyMovie), HttpStatus.OK);
+
+
     }
 
     @GetMapping(path = "/movie/top/today", produces = "application/json")
@@ -102,10 +100,10 @@ public class Endpoint {
 
     @GetMapping(path = "/session", produces = "application/json")
     public ResponseEntity<String> getSession(@RequestHeader("sessionID") String sessionID) {
-        if (redisSession.getSessionStatus(sessionID)) {
+        if (redisSession.isSessionValid(sessionID)) {
             return new ResponseEntity<>(gson.toJson(redisSession.getSessionData(sessionID)), HttpStatus.OK);
         } else {
-            throw  new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
         }
 
     }

@@ -2,7 +2,6 @@ package mmr.redis;
 
 import redis.clients.jedis.Jedis;
 
-import java.time.LocalDate;
 import java.util.Map;
 import java.util.UUID;
 
@@ -27,12 +26,12 @@ public class RedisSession {
         return sessionID;
     }
 
-    public boolean getSessionStatus(String sessionID){
+    public boolean isSessionValid(String sessionID){
         return jedis.exists("user:" + sessionID);
     }
 
     public Map<String, String> getSessionData(String sessionID) {
-        var check = getSessionStatus(sessionID);
+        var check = isSessionValid(sessionID);
         if (check) {
             return jedis.hgetAll("user:" + sessionID);
         }
@@ -40,7 +39,7 @@ public class RedisSession {
     }
 
     public Map<String, String> updateSessionData(String sessionID,Map<String, String> data){
-        var check = getSessionStatus(sessionID);
+        var check = isSessionValid(sessionID);
         if (check) {
             String userKey = "user:" + sessionID;
             jedis.hset(userKey, data);
