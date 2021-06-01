@@ -2,12 +2,14 @@ package mmr.redis;
 
 import mmr.dto.redis.RedisMovie;
 import mmr.dto.redis.RedisUser;
+import org.apache.tomcat.jni.Local;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.Tuple;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,6 +57,7 @@ public class RedisStats {
         String[] dates = new String[7];
         for (int i = 0; i <= 6; i++) {
             String date = currentdate.minusDays(i).toString();
+            System.out.println(date);
             dates[i] = date;
         }
         String dstKey = dates[0] + ">" + dates[6];
@@ -73,8 +76,8 @@ public class RedisStats {
         int daysInMonth = yearMonth.lengthOfMonth();
         String[] dates = new String[daysInMonth];
         for (int i = 0; i < daysInMonth; i++) {
-            LocalDate date = LocalDate.of(currentdate.getYear(), currentdate.getMonthValue(), i + 1);
-            dates[i] = date.toString();
+            String date = currentdate.minusDays(i).toString();
+            dates[i] = date;
         }
         String dstKey = dates[0] + ">" + dates[daysInMonth - 1];
         jedis.zunionstore(dstKey, dates);
@@ -137,6 +140,39 @@ public class RedisStats {
         return true;
     }
 
+    public boolean randomMovieData(){
+        Random rand = new Random();
+        LocalDate firstDateOfYear =  LocalDate.of(currentdate.getYear(),1 ,1);
+        List<LocalDate> dates = firstDateOfYear.datesUntil(currentdate).collect(Collectors.toList());
+        for (LocalDate date: dates) {
+            var response = jedis.sismember("top:total:movie", date.toString());
+            if (response) {
+                jedis.zincrby(date.toString(), rand.nextInt(100), "The Matrix Revolutions");
+                jedis.zincrby(date.toString(), rand.nextInt(100), "The Da Vinci Code");
+                jedis.zincrby(date.toString(), rand.nextInt(100), "You've Got Mail");
+                jedis.zincrby(date.toString(), rand.nextInt(100), "The Matrix");
+                jedis.zincrby(date.toString(), rand.nextInt(100), "The Matrix Reloaded");
+                jedis.zincrby(date.toString(), rand.nextInt(100), "Cast Away");
+                jedis.zincrby(date.toString(), rand.nextInt(100), "Top Gun");
+
+            } else {
+                try (var tran = jedis.multi()) {
+                    tran.sadd("top:total:movie", date.toString());
+                    tran.zincrby(date.toString(), rand.nextInt(100), "The Matrix Revolutions");
+                    tran.zincrby(date.toString(), rand.nextInt(100), "The Da Vinci Code");
+                    tran.zincrby(date.toString(), rand.nextInt(100), "You've Got Mail");
+                    tran.zincrby(date.toString(), rand.nextInt(100), "The Matrix");
+                    tran.zincrby(date.toString(), rand.nextInt(100), "The Matrix Reloaded");
+                    tran.zincrby(date.toString(), rand.nextInt(100), "Cast Away");
+                    tran.zincrby(date.toString(), rand.nextInt(100), "Top Gun");
+
+                    tran.exec();
+                }
+            }
+        }
+
+        return true;
+    }
     public void fulshDB() {
         jedis.flushAll();
     }
