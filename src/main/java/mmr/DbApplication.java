@@ -37,12 +37,14 @@ public class DbApplication {
         redisStats.addListTopFollowed(users);
 
         jedis.quit();
-        /*
+
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";
         UserDBImpl postgress = new UserDBImpl(url, userPass, userPass);
         postgress.setupData();
-*/
+        postgress.updateUserRole(1, "admin");
+        postgress.updateUserRole(4, "mod");
+
 
 
         Endpoint endpoint = new Endpoint();

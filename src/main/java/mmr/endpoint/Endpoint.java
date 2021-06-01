@@ -39,14 +39,16 @@ public class Endpoint {
         String password = "123";
         nj = new Neo4j(uri, user, password);
 
+//
+//        GenericObjectPoolConfig jedisPoolConfig = new GenericObjectPoolConfig();
+//        jedisPoolConfig.setMaxTotal(100);
+//        jedisPoolConfig.setMaxIdle(20);
+//        jedisPoolConfig.setMinIdle(10);
+//        jedisPoolConfig.setMaxWaitMillis(10000);
+//        JedisPool jedisPool = new JedisPool(jedisPoolConfig,"localhost", 6379);
+//        Jedis jedis = jedisPool.getResource();
 
-        GenericObjectPoolConfig jedisPoolConfig = new GenericObjectPoolConfig();
-        jedisPoolConfig.setMaxTotal(100);
-        jedisPoolConfig.setMaxIdle(20);
-        jedisPoolConfig.setMinIdle(10);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig,"localhost", 6379);
-        Jedis jedis = jedisPool.getResource();
-
+        Jedis jedis = new Jedis("localhost", 6379);
         redisStats = new RedisStats(jedis);
         redisSession = new RedisSession(jedis);
 
@@ -114,10 +116,10 @@ public class Endpoint {
     @PostMapping(path = "/session/start", consumes = "application/json", produces = "application/json")
     public String startSession(@RequestBody RequestBodyLogin RequestBodyLogin) throws SQLException {
         Map<String, String> response = postgress.getUser(RequestBodyLogin.getUsername());
+
         for (Map.Entry<String, String> entry: response.entrySet()
              ) {
             System.out.println(entry.getKey() + " TEST " + entry.getValue() );
-
         }
         String sessionID = redisSession.startSession(response);
         return "{\"sessionID\":\"" + sessionID + "\"}";

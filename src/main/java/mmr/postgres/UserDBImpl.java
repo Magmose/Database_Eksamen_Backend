@@ -153,8 +153,12 @@ public class UserDBImpl {
                     response.put("birthyear",String.valueOf(result.getInt("birthyear")));
                     response.put("role_type",result.getString("role_type"));
                     response.put("premium_end_date",String.valueOf(result.getLong("premium_end_date")));
-                    response.put("subsciption_tier",result.getString("subsciption_tier"));
                     response.put("card_number",String.valueOf(result.getLong("card_number")));
+
+                    String subsciption_tier = result.getString("subsciption_tier");
+                    if (subsciption_tier != null) {
+                        response.put("subsciption_tier", subsciption_tier);
+                    }
 
 
                     return response;
@@ -189,8 +193,8 @@ public class UserDBImpl {
 
                 while (result.next()) {
                     int user_id = result.getInt("user_id");
-                    String newRoleType = result.getString("old_role_type");
-                    String oldRoleType = result.getString("new_role_type");
+                    String oldRoleType  = result.getString("old_role_type");
+                    String newRoleType = result.getString("new_role_type");
                     String timestamp = result.getTimestamp("timestamp").toString();
 
                     String log = "USER ID: " + user_id + " OLD ROLE: " + oldRoleType + " NEW ROLE: " + newRoleType + " TIMESTAMP: " + timestamp;
