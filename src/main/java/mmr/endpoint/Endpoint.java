@@ -97,7 +97,7 @@ public class Endpoint {
 
     @GetMapping(path = "/user/top/followed", produces = "application/json")
     public String getTopUserFollowOverall() {
-        return gson.toJson(redisStats.getTopFollowed());
+        return gson.toJson(redisStats.getTopFollowed(3));
     }
 
     @GetMapping(path = "/user/top/update", produces = "application/json")

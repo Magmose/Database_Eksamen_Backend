@@ -1,5 +1,6 @@
 package mmr;
 
+import mmr.dto.redis.RedisUser;
 import mmr.endpoint.Endpoint;
 import mmr.neo4j.Neo4j;
 import mmr.neo4j.SetupNeo4j;
@@ -8,6 +9,8 @@ import mmr.redis.RedisSession;
 import mmr.redis.RedisStats;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import java.util.List;
 
 @SpringBootApplication
 public class DbApplication {
@@ -25,6 +28,11 @@ public class DbApplication {
 
         RedisStats redisStats = new RedisStats("localhost", 6379);
         RedisSession redisSession = new RedisSession("localhost", 6379);
+
+        redisStats.fulshDB();
+        redisStats.randomMovieData();
+        List<RedisUser> users = nj.getTopFollowed();
+        redisStats.addListTopFollowed(users);
 
         String url = "jdbc:postgresql://localhost/movieusers";
         String userPass = "softdb";

@@ -89,7 +89,7 @@ public class SetupNeo4j {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        nj.close();
+
     }
 
 
