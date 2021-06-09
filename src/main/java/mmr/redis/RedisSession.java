@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class RedisSession {
     private Jedis jedis;
-    private long sessionTimeInSecounds = 120;
+    private long sessionTimeInSecounds = 1800;
 
     public RedisSession(Jedis jedis) {
         this.jedis = jedis;
