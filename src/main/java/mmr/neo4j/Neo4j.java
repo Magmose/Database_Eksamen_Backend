@@ -1,5 +1,6 @@
 package mmr.neo4j;
 
+import mmr.dto.CentralityTuple;
 import mmr.dto.Movie;
 import mmr.dto.Person;
 import mmr.dto.SimilarityPair;
@@ -205,6 +206,47 @@ public class Neo4j implements AutoCloseable {
                     while (result2.hasNext()) {
                         Record pairValues = result2.next();
                         SimilarityPair pair = new SimilarityPair(pairValues.get("user1").asInt(), pairValues.get("user2").asInt(), pairValues.get("score").asDouble());
+                        pairs.add(pair);
+                    }
+                    return pairs;
+                }
+            });
+            return pairs;
+        }
+
+    }
+
+    public ArrayList<CentralityTuple> getCentralNodes() {
+        try (Session session = driver.session()) {
+            ArrayList<CentralityTuple> pairs = session.writeTransaction(new TransactionWork<ArrayList<CentralityTuple>>() {
+                @Override
+                public ArrayList<CentralityTuple> execute(Transaction tx) {
+
+                    //drop graph with silient fail -> add graph to catalogue
+                    System.out.println("--------------- prøver at lave graph i gds");
+                    Result setup = tx.run("call gds.graph.drop(\"centralityGraph\", false) yield graphName;");
+
+                    System.out.println("--------------- resultat fra at drop  graph i gds" + setup.consume());
+
+                    Result result = tx.run(
+                            "CALL gds.graph.create(\n" +
+                                    "  'centralityGraph',\n" +
+                                    "  'User',\n" +
+                                    "  'FOLLOWS'\n" +
+                                    ")");
+                    System.out.println("--------------- resultat fra at lave graph i gds" + result.consume());
+
+
+                    Result result2 = tx.run("CALL gds.pageRank.stream('centralityGraph')\n" +
+                            "YIELD nodeId, score\n" +
+                            "RETURN gds.util.asNode(nodeId).username AS name, score\n" +
+                            "ORDER BY score DESC, name ASC");
+
+
+                    ArrayList<CentralityTuple> pairs = new ArrayList<>();
+                    while (result2.hasNext()) {
+                        Record pairValues = result2.next();
+                        CentralityTuple pair = new CentralityTuple(pairValues.get("name").asString(), pairValues.get("score").asDouble());
                         pairs.add(pair);
                     }
                     return pairs;

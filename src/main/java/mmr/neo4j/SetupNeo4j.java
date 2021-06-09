@@ -1,5 +1,6 @@
 package mmr.neo4j;
 
+import mmr.dto.CentralityTuple;
 import mmr.dto.Movie;
 import mmr.dto.Person;
 import mmr.dto.SimilarityPair;
@@ -85,6 +86,11 @@ public class SetupNeo4j {
 //            pairs.forEach(similarityPair -> {
 //                System.out.println(similarityPair.getUserid1() + " -- "+similarityPair.getUserid2()+ " -- "+similarityPair.getScore()+ " -- ");
 //            });
+
+            ArrayList<CentralityTuple> tuples = nj.getCentralNodes();
+                    tuples.forEach(centralityTuple -> {
+                        System.out.println(centralityTuple);
+                    });
 
         } catch (Exception e) {
             e.printStackTrace();
