@@ -82,10 +82,10 @@ public class SetupNeo4j {
 //            persons.stream().forEach(person -> System.out.println((person.getName())));
 
 
-//            ArrayList<SimilarityPair> pairs = nj.getSimiliarNodes();
-//            pairs.forEach(similarityPair -> {
-//                System.out.println(similarityPair.getUserid1() + " -- "+similarityPair.getUserid2()+ " -- "+similarityPair.getScore()+ " -- ");
-//            });
+            ArrayList<SimilarityPair> pairs = nj.getSimiliarNodes();
+            pairs.forEach(similarityPair -> {
+                System.out.println(similarityPair.getUserid1() + " -- "+similarityPair.getUserid2()+ " -- "+similarityPair.getScore()+ " -- ");
+            });
 
             ArrayList<CentralityTuple> tuples = nj.getCentralNodes();
                     tuples.forEach(centralityTuple -> {

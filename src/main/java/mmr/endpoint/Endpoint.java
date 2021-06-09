@@ -93,6 +93,12 @@ public class Endpoint {
 
     }
 
+    @GetMapping(path = "/statistics/centrality", produces = "application/json")
+    public String getCentrality() {return gson.toJson(nj.getCentralNodes());}
+
+    @GetMapping(path = "/statistics/similarity", produces = "application/json")
+    public String getSimilarity() {return gson.toJson(nj.getSimiliarNodes());}
+
     @GetMapping(path = "/movie/top/today", produces = "application/json")
     public String getTopMovieToday() {
         return gson.toJson(redisStats.getTopToday());
