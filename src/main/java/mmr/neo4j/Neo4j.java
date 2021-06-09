@@ -178,7 +178,7 @@ public class Neo4j implements AutoCloseable {
                 public ArrayList<SimilarityPair> execute(Transaction tx) {
 
                     //drop graph with silient fail -> add graph to catalogue
-                    System.out.println("--------------- prøver at lave graph i gds");
+//                    System.out.println("--------------- prøver at lave graph i gds");
                     Result setup = tx.run("call gds.graph.drop(\"myGraph2\", false) yield graphName;");
 
                     System.out.println("--------------- resultat fra at drop  graph i gds" + setup.consume());

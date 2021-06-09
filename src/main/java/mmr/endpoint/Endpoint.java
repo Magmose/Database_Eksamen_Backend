@@ -39,14 +39,16 @@ public class Endpoint {
         String password = "123";
         nj = new Neo4j(uri, user, password);
 
+//
+//        GenericObjectPoolConfig jedisPoolConfig = new GenericObjectPoolConfig();
+//        jedisPoolConfig.setMaxTotal(100);
+//        jedisPoolConfig.setMaxIdle(20);
+//        jedisPoolConfig.setMinIdle(10);
+//        jedisPoolConfig.setMaxWaitMillis(10000);
+//        JedisPool jedisPool = new JedisPool(jedisPoolConfig,"localhost", 6379);
+//        Jedis jedis = jedisPool.getResource();
 
-        GenericObjectPoolConfig jedisPoolConfig = new GenericObjectPoolConfig();
-        jedisPoolConfig.setMaxTotal(100);
-        jedisPoolConfig.setMaxIdle(20);
-        jedisPoolConfig.setMinIdle(10);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig,"localhost", 6379);
-        Jedis jedis = jedisPool.getResource();
-
+        Jedis jedis = new Jedis("localhost", 6379);
         redisStats = new RedisStats(jedis);
         redisSession = new RedisSession(jedis);
 
@@ -75,6 +77,18 @@ public class Endpoint {
         redisStats.incDay(requestBodyMovie.getMovie());
         nj.userLikesMovie(Integer.parseInt(session.get("id")), requestBodyMovie.getMovie());
         return new ResponseEntity<>(gson.toJson(requestBodyMovie), HttpStatus.OK);
+
+
+    }
+
+    @GetMapping(path = "/getMovieReccomendations", produces = "application/json")
+    public ArrayList<Movie> getMovieReccomendations(@RequestHeader("sessionID") String sessionID) {
+        System.out.println("Before: " + sessionID);
+
+        Map<String, String> session = redisSession.getSessionData(sessionID);
+        if (session == null) throw new ResponseStatusException(HttpStatus.UNAUTHORIZED);
+        return nj.getMoviesLikedByFollowed(Integer.parseInt(session.get("id")));
+
 
 
     }
@@ -114,10 +128,10 @@ public class Endpoint {
     @PostMapping(path = "/session/start", consumes = "application/json", produces = "application/json")
     public String startSession(@RequestBody RequestBodyLogin RequestBodyLogin) throws SQLException {
         Map<String, String> response = postgress.getUser(RequestBodyLogin.getUsername());
+
         for (Map.Entry<String, String> entry: response.entrySet()
              ) {
             System.out.println(entry.getKey() + " TEST " + entry.getValue() );
-
         }
         String sessionID = redisSession.startSession(response);
         return "{\"sessionID\":\"" + sessionID + "\"}";
@@ -135,11 +149,6 @@ public class Endpoint {
 
     @GetMapping(path = "/getAllMovies")
     public ArrayList<Movie> getMovies() {
-        String uri = "bolt://localhost:7687";
-        String user = "neo4j";
-        String password = "123";
-        Neo4j nj = new Neo4j(uri, user, password);
-
         try {
 
             return nj.getAllMovies();
@@ -151,6 +160,19 @@ public class Endpoint {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
+    }
+
+
+    @GetMapping(path = "/getUserRoleLog")
+    public ArrayList<String> getUserRoleLog() {
+
+        try {
+            return postgress.getUserRoleLog();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        }
+
         return null;
     }
 

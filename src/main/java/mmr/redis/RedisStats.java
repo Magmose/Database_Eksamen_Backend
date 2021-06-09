@@ -57,7 +57,7 @@ public class RedisStats {
         String[] dates = new String[7];
         for (int i = 0; i <= 6; i++) {
             String date = currentdate.minusDays(i).toString();
-            System.out.println(date);
+//            System.out.println(date);
             dates[i] = date;
         }
         String dstKey = dates[0] + ">" + dates[6];
